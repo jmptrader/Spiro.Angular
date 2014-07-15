@@ -1,8 +1,10 @@
 Spiro.Angular
 =============
 
-Spiro.Angular is a library for accessing a Restful Objects API using the Angular.js framework.  
+Spiro.Angular is a library for accessing a [Restful Objects](http://restfulobjects.org) API using the [AngularJS](https://angularjs.org/) framework.  
 
-The representations returned by the API may be accessed either as the classes defined in Spiro.Models (on which Spiro.Angular depends) or transformed into simpler custom-defined classes -  which would typically be simpler (though less powerful) than the Spiro.Models. 
+The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more functional replacement for AngularJS' own [$resource](https://docs.angularjs.org/api/ngResource/service/$resource).  This transforms the Restul Objects representations into a simpler format for easier consumption (eg by [AngularStrap](http://mgcrea.github.io/angular-strap/) or [Angular-UI](http://angular-ui.github.io/bootstrap/)).
 
-Spiro.Modern is written in TypeScript and compiled to JavaScript.
+Under the covers Spiro.Angular depends upon the classes defined in [Spiro.Models](https://github.com/SpiroLibraries/Spiro.Models). 
+
+Spiro.Angular is written in [TypeScript](http://www.typescriptlang.org/) and compiled to JavaScript.
