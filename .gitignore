@@ -15,3 +15,7 @@ source/Tests/specs/maskService.js.map
 source/Tests/specs/helpers.js.map
 source/Tests/specs/colorService.js.map
 source/Spiro.Angular.csproj.user
+source/Scripts/jasmine-samples/Player.js
+source/Scripts/jasmine-samples/PlayerSpec.js
+source/Scripts/jasmine-samples/Song.js
+source/Scripts/jasmine-samples/SpecHelper.js
