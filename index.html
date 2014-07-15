@@ -54,14 +54,400 @@
 <p>The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more functional replacement for AngularJS' own <a href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a>.  This transforms the Restul Objects representations into a simpler format for easier consumption (eg by <a href="http://mgcrea.github.io/angular-strap/">AngularStrap</a> or <a href="http://angular-ui.github.io/bootstrap/">Angular-UI</a>).
 
       </section>
+      
       <section>
         <h1>
-<a name="design" class="anchor" href="#design"><span class="octicon octicon-link"></span></a>Design</h1>
+<a name="background" class="anchor" href="#background"><span class="octicon octicon-link"></span></a>About $resource</h1>
 
-<p>yada yada
+<pre>
+BACKGROUND
+
+* trying to model an API as similar to $resource as possible.
+  - https://code.angularjs.org/1.2.19/docs/api/ngResource/service/$resource
+* closest analogy is that it returns an instance of an object
+  - eg url: /customers/:id
+* defines five standard actions; first four are CRD (no 'U' update):
+  - get() ... GET return a single instance
+  - save() ... POST a new instance
+  - remove() or delete() ... DELETE an instance
+* a complication is that it defines a standard action for a repository query
+  - query() ... GET return an array of instances (by omitting the :id)
+* as well as the five standard actions, can also define custom actions
+* with all actions can:
+  - override the URL
+  - provide a transformRequest/transformResponse
+
+
+Example of using $resource:
+
+var CreditCard = $resource(
+                     '/user/:userId/card/:cardId',
+                     {userId:123, cardId:'@id'}, {
+                       charge: {method:'POST', params:{charge:true}}
+                     });
+
+var cards = CreditCard.query(function() {
+   // GET: /user/123/card (nb, omits the :id)
+   // server returns: [ {id:456, number:'1234', name:'Smith'} ];
+
+   var card = cards[0];
+   card.name = "J. Smith";
+   card.$save();
+   // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+   // server returns: {id:456, number:'1234', name: 'J. Smith'};
+
+   card.$charge({amount:9.99});
+   // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
+ });
+
+var newCard = new CreditCard({number:'1234-5678-0987-6543'});
+newCard.name = "Mike Smith";
+newCard.$save();
+// POST: /user/123/card {num:"1234-5678-0987-6543", name:'Mike Smith'}
+// server returns: {id:789987654561, num:"1234-5678-0987-6543", name: 'Mike Smith'};
+</pre>
 
       </section>
 
+
+
+      <section>
+        <h1>
+<a name="philosophy" class="anchor" href="#philosophy"><span class="octicon octicon-link"></span></a>Philosophy</h1>
+
+<pre>
+- Angular's uses a "$" prefix for any reserved keys, also for "synthetic" nodes such as those representing instance actions
+- Spiro uses a "$$" prefix for any of its reserved keys; it uses a single "$" to reference actions (ie same as AngularJS)
+- the representation provided by Spiro is the property values; this is flattened for easy binding into the Angular $scope
+- the Spiro representation it also includes a special "$$ro" property which:
+  - has an equivalent map of members providing access to other capabilities exposed by the RO resources
+  - exposes the underlying RO representation
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+<!--
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+
+<pre>
+</pre>
+
+      </section>
+-->
+      
+      
       <footer>
         <p>Project maintained by <a href="https://github.com/SpiroLibraries">SpiroLibraries</a></p>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
