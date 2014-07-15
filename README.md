@@ -5,12 +5,12 @@ Spiro.Angular is a library for accessing a [Restful Objects](http://restfulobjec
 
 The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more functional replacement for AngularJS' own [$resource](https://docs.angularjs.org/api/ngResource/service/$resource).  This transforms the Restul Objects representations into a simpler format for easier consumption (eg by [AngularStrap](http://mgcrea.github.io/angular-strap/) or [Angular-UI](http://angular-ui.github.io/bootstrap/)).
 
-See the [[project website](http://spirolibraries.github.io/Spiro.Angular/) for more detail.
+See the [project website](http://spirolibraries.github.io/Spiro.Angular/) for more detail.
 
-###### Language
+##### Language
 Spiro.Angular is written in [TypeScript](http://www.typescriptlang.org/) and compiled to JavaScript.
 
-###### License
+##### License
 
     Copyright 2014 Dan Haywood, Stef Cascarini, Richard Pawson
 
@@ -27,7 +27,7 @@ Spiro.Angular is written in [TypeScript](http://www.typescriptlang.org/) and com
     specific language governing permissions and limitations
     under the License.
 
-###### Dependencies
+##### Dependencies
 Spiro.Angular depends upon:
 * [Spiro.Models](https://github.com/SpiroLibraries/Spiro.Models) (also ASL v2)
 * [UnderscoreJS](http://underscorejs.org/) (similar to X/MIT Copyrights)
