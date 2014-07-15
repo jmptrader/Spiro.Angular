@@ -11,6 +11,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="javascripts/main.js"></script>
+    <script src="javascripts/main-patched.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -45,129 +46,207 @@
         <ul>
         </ul>
       </nav>
+
       <section>
-        <h1>
-<a name="spiroangular" class="anchor" href="#spiroangular"><span class="octicon octicon-link"></span></a>Spiro.Angular</h1>
+          <h1>
+              <a name="spiroangular" class="anchor" href="#spiroangular"><span class="octicon octicon-link"></span></a>Spiro.Angular
+          </h1>
 
-<p>Spiro.Angular is a library for accessing a <a href="http://restfulobjects.org">Restful Objects</a> API using the <a href="https://angularjs.org/">AngularJS</a> framework.</p>
+          <p>Spiro.Angular is a library for accessing a <a href="http://restfulobjects.org">Restful Objects</a> API
+              using the <a href="https://angularjs.org/">AngularJS</a> framework.</p>
 
-<p>The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more functional replacement for AngularJS' own <a href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a>.  This transforms the Restul Objects representations into a simpler format for easier consumption (eg by <a href="http://mgcrea.github.io/angular-strap/">AngularStrap</a> or <a href="http://angular-ui.github.io/bootstrap/">Angular-UI</a>).
+          <p>The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more
+              functional replacement for AngularJS' own <a
+                      href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a>. This transforms
+              the Restul Objects representations into a simpler format for easier consumption (eg by <a
+                      href="http://mgcrea.github.io/angular-strap/">AngularStrap</a> or <a
+                      href="http://angular-ui.github.io/bootstrap/">Angular-UI</a>).
 
       </section>
-      
+
       <section>
-        <h1>
-<a name="background" class="anchor" href="#background"><span class="octicon octicon-link"></span></a>About $resource</h1>
+          <h1>
+              <a name="background" class="anchor" href="#background"><span class="octicon octicon-link"></span></a>Background
+              ($resource)</h1>
 
+          <p>
+              Spiro.Angular tries to provide an API as similar to AngularJS'
+              <a target="_blank" href="https://code.angularjs.org/1.2.19/docs/api/ngResource/service/$resource">$resource</a>
+              service as
+              possible.
+
+          <p>In the simplest case the resource returns a representation of a single &quot;object&quot;</p>
+          <ul>
+              <li>
+                  <p>eg: <code>/customers/:id</code></p>
+              </li>
+          </ul>
+          <p>It also defines five standard actions. Four of these correspond to CRUD:</p>
+          <ul>
+              <li>
+                  <p><code>get()</code> to HTTP GET return a single instance</p>
+              </li>
+              <li>
+                  <p><code>save()</code> to HTTP POST to either create new instance/update existing</p>
+                  <ul>
+                      <li>
+                          update if POST to eg: <code>/customers/:id</code>
+                      </li>
+                      <li>
+                          create if POST to eg: <code>/customers/</code>
+                      </li>
+                  </ul>
+              </li>
+              <li>
+                  <p><code>remove()</code> or <code>delete()</code> to HTTP DELETE an instance</p>
+              </li>
+          </ul>
+          <p>The fifth standard action relates not to (the representation of) an instance of an object, but instead to a
+              &quot;repository&quot; query</p>
+          <ul>
+              <li>
+                  <p><code>query()</code> to HTTP GET return an array of instances (by omitting the <code>:id</code>)
+                  </p>
+              </li>
+          </ul>
+
+          <p>As well as the five standard actions, the developer can also define custom actions. These custom actions
+              are what
+              enable updates to the object.</p>
+
+          <p>In addition, with all actions it is possible to override the URL, and to provide a
+              <code>transformRequest</code> and/or <code>transformResponse</code> function</p>
+
+          <h3>Example of using <code>$resource</code></h3>
+
+          <p>
+              Declare a resource with a custom <code>charge</code> action:
+          </p>
 <pre>
-BACKGROUND
-
-* trying to model an API as similar to $resource as possible.
-  - https://code.angularjs.org/1.2.19/docs/api/ngResource/service/$resource
-* closest analogy is that it returns an instance of an object
-  - eg url: /customers/:id
-* defines five standard actions; first four are CRD (no 'U' update):
-  - get() ... GET return a single instance
-  - save() ... POST a new instance
-  - remove() or delete() ... DELETE an instance
-* a complication is that it defines a standard action for a repository query
-  - query() ... GET return an array of instances (by omitting the :id)
-* as well as the five standard actions, can also define custom actions
-* with all actions can:
-  - override the URL
-  - provide a transformRequest/transformResponse
-
-
-Example of using $resource:
-
 var CreditCard = $resource(
                      '/user/:userId/card/:cardId',
                      {userId:123, cardId:'@id'}, {
                        charge: {method:'POST', params:{charge:true}}
                      });
+</pre>
 
+          <p>Query for some matching objects:</p>
+<pre>
 var cards = CreditCard.query(function() {
-   // GET: /user/123/card (nb, omits the :id)
-   // server returns: [ {id:456, number:'1234', name:'Smith'} ];
+// GET: /user/123/card (nb, omits the :id)
+// server returns: [ {id:456, number:'1234', name:'Smith'} ];
+</pre>
 
-   var card = cards[0];
-   card.name = "J. Smith";
-   card.$save();
-   // POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
-   // server returns: {id:456, number:'1234', name: 'J. Smith'};
+          <p>Update the first instance:</p>
+<pre>
+var card = cards[0];
+card.name = "J. Smith";
+card.$save();
+// POST: /user/123/card/456 {id:456, number:'1234', name:'J. Smith'}
+// server returns: {id:456, number:'1234', name: 'J. Smith'};
+</pre>
 
-   card.$charge({amount:9.99});
-   // POST: /user/123/card/456?amount=9.99&charge=true {id:456, number:'1234', name:'J. Smith'}
- });
+          <p>Update using the custom action:</p>
+<pre>
+card.$charge({amount:9.99});
 
+// POST: /user/123/card/456?amount=9.99&charge=true
+// server returns:
+// {id:456, number:'1234', name:'J. Smith'}
+</pre>
+
+          <p>Create a new instance:</p>
+<pre>
 var newCard = new CreditCard({number:'1234-5678-0987-6543'});
 newCard.name = "Mike Smith";
 newCard.$save();
+
 // POST: /user/123/card {num:"1234-5678-0987-6543", name:'Mike Smith'}
-// server returns: {id:789987654561, num:"1234-5678-0987-6543", name: 'Mike Smith'};
+// server returns:
+// {id:789987654561, num:"1234-5678-0987-6543", name: 'Mike Smith'};
 </pre>
 
       </section>
-
 
 
       <section>
-        <h1>
-<a name="philosophy" class="anchor" href="#philosophy"><span class="octicon octicon-link"></span></a>Philosophy</h1>
+          <h1>
+              <a name="approach" class="anchor" href="#approach"><span class="octicon octicon-link"></span></a>Approach
+          </h1>
 
-<pre>
-- Angular's uses a "$" prefix for any reserved keys, also for "synthetic" nodes such as those representing instance actions
-- Spiro uses a "$$" prefix for any of its reserved keys; it uses a single "$" to reference actions (ie same as AngularJS)
-- the representation provided by Spiro is the property values; this is flattened for easy binding into the Angular $scope
-- the Spiro representation it also includes a special "$$ro" property which:
-  - has an equivalent map of members providing access to other capabilities exposed by the RO resources
-  - exposes the underlying RO representation
-</pre>
+          <p>The main API provided by Spiro.Angular is <code>$spiroResource</code>, intended to have a similar API to
+              AngularJS' $resource.  It has a similar set of standard actions.  One notable difference is that
+              custom actions need not be defined because they are inferred from the underlying Restful Objects
+              representations.  The net result for the developer is far less boilerplate, and leveraging of far
+              more advanced out-of-the-box capabilities.</p>
+
+          <p>The default representation provided by Spiro.Angular is the property values; this is flattened for easy binding
+              into the Angular <code>$scope</code>.</p>
+          <p>the Spiro.Angular representation it also includes a special <code>$$ro</code> property.  This provides access to
+              other capabilities exposed by the Restful Objects resources.</p>
+          <p>Spiro.Angular uses &quot;$$&quot; prefix for various other reserved keys (similar to the way that AngularJS
+              uses a &quot;$&quot; prefix for its own reserved keywords and functions).</p>
+          <p>For consistency with AngularJS, Spiro.Angular also a single &quot;$&quot; to reference any domain object actions</p>
+
+
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="flattened-value-properties" class="anchor" href="#flattened-value-properties"><span class="octicon octicon-link"></span></a>Flattened value properties</h1>
 
+          <div class="use-case">
+          <h3>Use case</h3>
+          <p>
+            Enable simple bindings of property values into the UI, via <code>$scope</code>.
+          </p>
+          </div>
+
+            <p>
+          Define a resource similarly to the way in which a resource would be defined using $resource:
+            </p>
+          <p>Given:</p>
 <pre>
-Use case: enable simple bindings of property values into the UI (via $scope)
-
-The $spiroResource is modelled after $resource, to provide a similar API and (after all iterations sketched here) to support both a similar set of standard actions and support for custom actions.  However, for the developer the API requires less boilerplate, and provides far more advanced out-of-the-box capabilities.
-
-Define a resource similarly to the way in which a resource would be defined using $resource:
-
 var CreditCard = $spiroResource(
                      "/objects/:domainType/:instanceId",
                      {domainType: 'creditCard', instanceId:'@num'});
+</pre>
+          <p>
+where:
+          <ul>
+              <li>the first arg is the templated URL</li>
+              <li>the second arg is parameter bindings, with parameters pre-bound to literals (shown), functions (not shown) or to placeholders (shown).  This is modelled after the similar args in <code>$resource</code>.</li>
+          </ul>
+          </p>
 
-The first arg is the templated URL, the second (modelled after $resource) are parameter bindings, with parameters pre-bound to literals (shown), functions (not shown) or to placeholders (shown).
-                     
-Initially the only 'standard' action supported is:
-- get() ... GET against the URL, with response transformer to flatten
-
-Other standard actions:
-- ignore the save(), remove(), delete() actions for now (tackle in subsequent iteration)
-- unlike $resource we do NOT define a 'standard' query() action
-
-The result of a get() is a transformed result which flattens for easy binding to $scope:
-
-when:
+          <p>Like <code>$resource</code>, <code>$spiroResource</code> supports HTTP GET with the <code>get()</code> standard action.</p>
+<p>When:</p>
+<pre>
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then:
+</pre>
+          <p>Then the result of a get() is a transformed result which flattens for easy binding to <code>$scope</code>:
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith"
 }
-
-For this iteration, just simple value properties, not reference properties.
-
-Hidden properties should not be included.  (This is true for collections and actions, below, also).
 </pre>
 
+            <p>
+                Hidden properties should not be included.  (This is true for collections and actions, below, also).
+            </p>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#">Reference properties</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+              The already-spiked response transformer does the flattening.
+          </p>
       </section>
 
       
@@ -1709,8 +1788,78 @@ and HTTP status code 201
 
       </section>
 
-      
-      
+
+
+
+
+      <section>
+          <h1>
+              <a name="ro-1-1" class="anchor" href="#ro-1-1"><span class="octicon octicon-link"></span></a>Restful Objects v1.1</h1>
+
+<pre>
+      APPENDIX: the RO 1.1 resources
+
+      key:
+      XXX* indicates supports validation (via ?x-ro-validate-only optional param)
+
+
+
+      "Services"
+      /services
+      GET
+
+
+      "Objects Of Type"
+      /objects/{domainType}
+      POST*
+
+
+
+      "Object" or "Service"
+      /objects/{domainType}/{instanceId}
+      /services/{serviceId}
+      GET
+
+
+      "Object Property"
+      /objects/{domainType}/{instanceId}/properties/{property}
+      GET
+      PUT*
+      DELETE*
+
+
+      "Object Property Prompt"
+      /objects/{domainType}/{instanceId}/properties/{property}/prompt
+      GET
+
+
+      "Object Collection"
+      /objects/{domainType}/{instanceId}/collections/{collection}
+      GET
+      POST* or PUT*
+
+
+      "Object Action" or "Service Action"
+      /objects/{domainType}/{instanceId}/actions/{actionId}
+      services/{serviceId}/actions/{actionId}
+      GET
+
+
+      "Object Action Parameter Prompt"
+      /objects/{domainType}/{instanceId}/actions/{actionId}/params/{param}/prompt
+      GET
+
+
+      "Object Action Invoke" or "Service Action Invoke"
+      /objects/{domainType}/{instanceId}/actions/{actionId}/invoke
+      /services/{serviceId}/actions/{actionId}/invoke
+      GET*, PUT*, POST*
+</pre>
+
+      </section>
+
+
+
       <footer>
       <!--
         <p>Project maintained by <a href="https://github.com/SpiroLibraries">SpiroLibraries</a></p>
