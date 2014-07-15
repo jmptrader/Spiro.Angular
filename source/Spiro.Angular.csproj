@@ -45,6 +45,10 @@
     <Content Include="SpiroReadMe.txt" />
     <TypeScriptCompile Include="Scripts\spiro.placeholder.app.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.config.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.helpers.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.shims.d.ts" />
     <TypeScriptCompile Include="Tests\specs\colorService.ts" />
     <Content Include="Tests\specs\colorService.js" />
     <TypeScriptCompile Include="Tests\specs\helpers.ts" />
