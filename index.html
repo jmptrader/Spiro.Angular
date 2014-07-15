@@ -130,54 +130,42 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="flattened-value-properties" class="anchor" href="#flattened-value-properties"><span class="octicon octicon-link"></span></a>Flattened value properties</h1>
 
 <pre>
-</pre>
+Use case: enable simple bindings of property values into the UI (via $scope)
 
-      </section>
+The $spiroResource is modelled after $resource, to provide a similar API and (after all iterations sketched here) to support both a similar set of standard actions and support for custom actions.  However, for the developer the API requires less boilerplate, and provides far more advanced out-of-the-box capabilities.
 
-      
-      
-<!--
-      <section>
-        <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+Define a resource similarly to the way in which a resource would be defined using $resource:
 
-<pre>
-</pre>
+var CreditCard = $spiroResource(
+                     "/objects/:domainType/:instanceId",
+                     {domainType: 'creditCard', instanceId:'@num'});
 
-      </section>
+The first arg is the templated URL, the second (modelled after $resource) are parameter bindings, with parameters pre-bound to literals (shown), functions (not shown) or to placeholders (shown).
+                     
+Initially the only 'standard' action supported is:
+- get() ... GET against the URL, with response transformer to flatten
 
-      
-      
-      <section>
-        <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+Other standard actions:
+- ignore the save(), remove(), delete() actions for now (tackle in subsequent iteration)
+- unlike $resource we do NOT define a 'standard' query() action
 
-<pre>
-</pre>
+The result of a get() is a transformed result which flattens for easy binding to $scope:
 
-      </section>
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
-      
-      
-      <section>
-        <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith"
+}
 
-<pre>
-</pre>
+For this iteration, just simple value properties, not reference properties.
 
-      </section>
-
-      
-      
-      <section>
-        <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
-
-<pre>
+Hidden properties should not be included.  (This is true for collections and actions, below, also).
 </pre>
 
       </section>
@@ -186,9 +174,28 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="ro-access" class="anchor" href="#ro-access"><span class="octicon octicon-link"></span></a>$$ro access</h1>
 
 <pre>
+Use case: support arbitrary more sophisticated use cases through the RO representations.
+
+Spiro appends an additional property "$$ro", which provides access to the RO "Object" representation ($$ro.$$href) and the object's title ($$ro.$$title)
+
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  $$ro: {
+    $$href: "http://localhost:8080/rest/objects/creditCard/1234-5678-9012-3456",
+    $$title: "1234-5678-9012-3456 (Mike Smith)"
+  }
+}
+
+eg
+card.$$ro.$$title
 </pre>
 
       </section>
@@ -197,9 +204,39 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="property-metadata" class="anchor" href="#property-metadata"><span class="octicon octicon-link"></span></a>Property Metadata</h1>
 
 <pre>
+Use case: provide hints to indicate the datatypes, also other metadata information.   
+
+This makes the API more discoverable, but also enables more sophisticated UI widgets to consume the data (possibly even completely generic ultimately).  It also establishes some structure on which future iterations build.
+
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  $$ro: {
+    ...,
+    num: {
+      memberType: "property",
+      dataType: "string",
+      length: 19,
+      friendlyName: "Credit card number",
+      detail: "http://localhost:8080/rest/creditCard/1234-5678-9012-3456/property/num"
+    },
+    name: {
+      memberType: "property",
+      dataType: "string",
+      length: 50,
+      friendlyName: "Name",
+      detail: "http://localhost:8080/rest/creditCard/1234-5678-9012-3456/property/name"
+    },
+    ...
+  }
+}
 </pre>
 
       </section>
@@ -208,9 +245,50 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="lazy-resolving" class="anchor" href="#lazy-resolving"><span class="octicon octicon-link"></span></a>Lazy Resolving</h1>
 
 <pre>
+Use case: determination and management of resolving of the representation
+
+Angular's $resource is intended to return a representation that can be bound immediately into the scope.  Then, when the (async) request completes, $resource updates the representation; any UI widgets are automatically updated.
+
+Angular also allows indicates whether this has happened using a "resolved" property.
+
+Following $resource's lead, the $$ro.$$resolved property indicates if the representatoin has been resolved yet, and $$ro.$$promise provides access to the pending promise, eg to register additional completion callbacks.
+
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+then initially returns:
+{
+  $$ro: { 
+    ...,
+    $$resolved: false,
+    $$promise: ...
+  }
+}
+
+when the underlying async call has completed, the map is dynamically updated:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  $$ro: {
+    $$resolved: true,
+    $$promise: ...,
+    $$href: "http://localhost:8080/rest/objects/creditCard/1234-5678-9012-3456",
+    $$title: "1234-5678-9012-3456 (Mike Smith)"
+  }
+}
+
+The client can therefore set up a watch on {{$scope.$$ro.$$resolved}} and use as a mechanism to be triggered when complete successfully.  One possibility is to use as the value of an ng-show directive:
+
+<div ng-show="$$ro.$$resolved">
+  <label>{{name}}</label>
+</div>
+
+Or, the client can add callbacks:
+
+$$scope.$$ro.$$promise.then(function() { ... })
 </pre>
 
       </section>
@@ -219,9 +297,38 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="reference-properties" class="anchor" href="#reference-properties"><span class="octicon octicon-link"></span></a>Reference Properties</h1>
 
 <pre>
+Use case: enable rendering of references to other representations.
+
+Extends the representation so that reference properties are also part of the representation.
+
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  customer: {
+    $$href: "http://localhost:8080/rest/customers/1234567",
+    $$title: "#1234567: Mr. Michael Smith"
+  },
+  $$ro: {
+    ...
+    customer: {
+      memberType: "property",
+      dataType: "customer",
+      friendlyName: "Customer",
+      detail: "http://localhost:8080/rest/creditCard/1234-5678-9012-3456/property/customer"
+    }
+  }
+}
+
+Here "customer" is a map containing an href ($$href) to another object.  The title ($$title) is also provided so client can render the link with a human-readable description.
+
+In the metadata, the "$$ro.customer.dataType" holds the (compile-time) domainType of the referenced resource.
 </pre>
 
       </section>
@@ -230,9 +337,23 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="hateoas-support" class="anchor" href="#hateoas-support"><span class="octicon octicon-link"></span></a>HATEOAS Support</h1>
 
 <pre>
+Use case: Support Hateoas traversal (eg to customer.$$href in previous iteration, or to collections, or to results of action)
+
+$spiroResource defines getUrl() as an additional "standard" action.  This acts somewhat like get(), but accepts a URL instead.
+
+when:
+var card = CreditCard.getUrl("http://localhost:8080/rest/objects/creditcard/1234-5678-9012-3456")
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  customer: { ... }
+  $$ro: { ... }
+}
 </pre>
 
       </section>
@@ -241,9 +362,49 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="collections-as-lists" class="anchor" href="#collections-as-lists"><span class="octicon octicon-link"></span></a>Collections as lists</h1>
 
 <pre>
+Use Case: enable rendering of collections in lists.
+
+Extend the representation to include collections, eagerly resolved and showing titles (so can be rendered in a list)
+
+when
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  recentPurchases: [
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456701"
+      $$title: "Beverages from Starbuck, $4.95"
+    },
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456702"
+      $$title: ...
+    },
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456703"
+      $$title: ...
+    },
+  ],
+  $$ro: {
+    ...
+    recentPurchases: {
+      memberType: "collection",
+      dataType: "customer",
+      friendlyName: "Recent Purchases",
+      resolved: true,
+      resolveStyle: "list",
+      ...
+    }
+  }
+}
+
+In the metadata:
+- "$$ro.recentPurchases.resolved" indicates whether the collection has been resolved.
+- "$$ro.recentPurchases.resolveStyle" indicates how the collection was resolved.
+- "$$ro.recentPurchases.dataType" holds the (compile-time) domainType of the referenced resources
 </pre>
 
       </section>
@@ -252,9 +413,56 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="collections-as-tables" class="anchor" href="#collections-as-tables"><span class="octicon octicon-link"></span></a>Collections as tables</h1>
 
 <pre>
+Use Case: enable rendering of collections in tables.
+
+Extend the eagerly resolved representation to include other properties (so can be rendered in a table)
+
+eg
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  recentPurchases: [
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456701",
+      $$title: "Beverages from Starbuck, $4.95",
+      description: "Beverages",
+      vendor: "Starbucks",
+      date: "2014-07-10",
+      amount: 4.95
+    },
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456702",
+      $$title: ...,
+      description: ...,
+      vendor: ...,
+      date: ...,
+      amount: ...
+    },
+    { $$href: "http://localhost:8080/rest/objects/purchase/123456703",
+      $$title: ...,
+      description: ...,
+      vendor: ...,
+      date: ...,
+      amount: ...
+    },
+  ],
+  $$ro: {
+    ...
+    recentPurchases: {
+      ...
+      resolved: true,
+      resolveStyle: "table",
+      ...
+    }
+  }
+}
+
+Whether a list (previous iteration) or the full table representation (this iteration) is returned is determined by the server.  (A subsequent iteration introduces the ability for the client to influence what is resolved).
 </pre>
 
       </section>
@@ -263,9 +471,62 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="lazy-resolving-of-collections" class="anchor" href="#lazy-resolving-of-collections"><span class="octicon octicon-link"></span></a>Lazy resolving of collections</h1>
 
 <pre>
+Use case: Accessing a collection (eg to render it) should automatically resolve the collection
+
+By default, returns a placeholder for the collection:
+
+when:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  recentPurchases: null,
+  $$ro: {
+    ...
+    recentPurchases: {
+      ...
+      resolved: false,
+      resolveStyle: null,
+      ...
+    }
+}
+
+Spiro sets up its own watch on the collection (eg {{$scope.recentPurchases.resolveStyle}}) to respond to a resolve request.
+
+when:
+card.$$ro.recentPurchases.resolveStyle = "list"
+
+or when:
+card.$$ro.recentPurchases.resolveStyle = "table"
+
+then:
+Spiro will then resolve the collection using either of two styles (see previous iterations).  It will also update the representation to include a promise:
+
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  recentPurchases: null,
+  $$ro: {
+    ...
+    recentPurchases: {
+      ...
+      resolved: false,
+      resolveStyle: "table",
+      promise: ...
+      ...
+    }
+}
+
+the client can then also setup their own additional callbacks on this promise:
+
+card.$$ro.recentPurchases.promise.then(function(){ ... })
 </pre>
 
       </section>
@@ -274,9 +535,71 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h1>
 
 <pre>
+Use case: enable domain object actions to be invoked.
+
+Whereas $resource requires custom 'actions' to be explicitly mapped, Spiro should automatically map any domain object actions provided by RO as actions on the $spiroResource instance).  Following $resource's convention, these are all invoked with a '$' prefix.
+
+eg, if CreditCard has an 'expireOn(date)' action, then map is basically:
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $expireOn: ... // a Spiro provided function that knows how to invoke the action
+  $$ro: {
+    ...
+    $expireOn: {
+      memberType: action,
+      friendlyName: "Expire on",
+      parameters: {
+        date: {
+          dataType: date,
+          friendlyName: "Date"
+        }
+      }
+      detail: "http://localhost:8080/rest/creditCard/1234-5678-9012-3456/action/expireOn"
+    }
+  }
+}
+
+when:
+card.$expireOn({date: "2014-07-15"})
+
+Spiro will first copy the arguments into $$ro:
+
+{
+  ...
+  $$ro: {
+    ...
+    $expireOn: {
+      parameters: {
+        date: {
+          argument: "2014-07-15"
+        }
+      }
+      ...
+    }
+  }
+}
+
+and then will submit execute the action.
+
+After the action is invoked, Spiro must automatically refresh the entire object representation because arbitrary properties may have changed.  In essence, this is an "HTTP redirect (to GET) after POST".
+
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  ... // other properties updated if changed by action
+  ...
+}
 </pre>
 
       </section>
@@ -285,9 +608,150 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="action-results" class="anchor" href="#action-results"><span class="octicon octicon-link"></span></a>Action results</h1>
 
 <pre>
+Use case: make the results of an action available to the client (HATEOAS support)
+
+$resource's actions always return an updated representation of the same object; there is no real HATEOAS support.  RO in contrast hardly ever returns the same representation.
+
+To make $spiroResource feel the same as $resource, it should always return the same representation.  But to enable HATEOAS, the result of the most recent action should be made available under "$$ro" property.  The app can then read it and follow if it wishes.
+
+eg assume there is a $findPurchases action to find items that have been purchased using the credit card in a particular timespan
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $findPurchases: ...,
+  $$ro: {
+    $findPurchases: {
+      memberType: "action",
+      friendlyName: "Find purchases",
+      parameters: {
+        from: {
+          dataType: date,
+          friendlyName: "From"
+        },
+        to: {
+          dataType: date,
+          friendlyName: "To"
+        }
+      }
+    }
+  }
+}
+
+when:
+card.$findPurchases({from: "2014-07-01", to: null})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $findPurchases: ...,
+  $$ro: {
+    ...
+    $findPurchases: {
+      ...
+      result: [
+        { $$href: "http://localhost:8080/rest/objects/purchase/123456701",
+          $$title: "Beverages from Starbuck, $4.95"
+        },
+        { $$href: "http://localhost:8080/rest/objects/purchase/123456702",
+          $$title: ...
+        },
+        { $$href: "http://localhost:8080/rest/objects/purchase/123456703",
+          $$title: ...
+        },
+        { $$href: "http://localhost:8080/rest/objects/purchase/123456704",
+          $$title: ...
+        }
+      ],
+      ...
+    }
+  }
+}
+
+where $$ro.$findPurchases.result holds the result of the action.
+
+The intention is for the client to either respond immediately to a new value under $$ro.$findPurchases.result, or just ignore it. Therefore, any previously stored at $$ro.$xxx.result will be overwritten.
+
+~~
+If the action returns a single object, then it will hold this instead.
+
+eg assume there is a $mostRecentPurchase action to finds the most recently purchased item:
+
+when:
+card.$mostRecentPurchase()
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $mostRecentPurchase: ...,
+  $$ro: {
+    ...
+    $mostRecentPurchase: {
+      ...
+      result: { 
+        $href: "http://localhost:8080/rest/objects/purchase/123456701",
+        $title: "Beverages from Starbuck, $4.95"
+      }
+    }
+  }
+}
+
+~~
+If the action returns a single scalar value, then it will hold this instead.
+
+eg assume there is a $countPurchases action to count the number of purchased items in a date range:
+
+when:
+card.$countPurchases()
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $countPurchases: ...,
+  $$ro: {
+    ...
+    $countPurchases: {
+      ...
+      result: 9
+    }
+  }
+}
+
+~~
+If the action returns void, then the 'result' property is removed (if present).
+
+eg the $expireOn action
+
+when:
+card.$expireOn({date: "2014-07-15"})
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $expire: ...,
+  $$ro: {
+    ...
+    $expireOn: {
+      ... // no "result" property
+    }
+  }
+}
 </pre>
 
       </section>
@@ -296,9 +760,28 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="automatically-updated-properties" class="anchor" href="#automatically-updated-properties"><span class="octicon octicon-link"></span></a>Automatically updated properties</h1>
 
 <pre>
+Use case: updating the values bound to the scope should automatically update the server via the RO REST API
+
+Whereas $resource does not automatically provide any sort of 'update' (only CRD of CRUD), with Spiro we can automatically update properties by binding to the scope.
+
+A Spiro-provided directive "spiro-update" controls whether this occurs automatically:
+
+<input ng-model="name" spiro-update>${name}</input>
+
+adds a watch to the {{$scope.name}} (using $scope.$watch API).  If changed then Spiro will automatically post the change to the corresponding RO resource.
+
+This directive could also be inherited from a parent div or form:
+
+eg:
+<div spiro-update>
+  <input ng-model="name">${name}</input>
+  <input ng-model="address">${address}</input>
+</div>
+
+A slight issue here is that if the property that has dependents on it (as addressed in iteration #21), then the current value of those dependents may change.  Updating those dependent properties is a server-side responsibility, but Spiro will automatically refresh the entire object representation whenever a property is updated to ensure it is sync.  In essence, this is an "HTTP redirect (to GET) after POST"
 </pre>
 
       </section>
@@ -307,9 +790,46 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="updating-view-models" class="anchor" href="#updating-view-models"><span class="octicon octicon-link"></span></a>Updating view models</h1>
 
 <pre>
+Use case: support editable view models (Isis' implementation)
+
+Normally updating a property will mutate that object and return a representation of that object; but in theory (and in Isis' view model implementation) the target object could be immutable and instead return the URL of a new modified target object in its stead.  Thus, invoking a property modification could result in a new resource to fetch.  This can be captured in $$ro.property.result, same as for actions.
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $$ro: { ... }
+}
+
+when:
+card.name = "Joe Smith"
+
+now returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Joe Smith",
+  ...
+  $$ro: {
+    ...
+    name: {
+      result: {
+        $$href: "http://localhost:8080/rest/objects/cards/1234-5678-9012-3456",
+        $$title: "1234-5678-9012-3456 (Joe Smith)"
+      }
+    }
+  }
+}
+
+In this particular example the object itself has been mutated - probably the backing object is an entity.  However, it might not in general; the $$ro.name.result.$$href does not necessarily always equal $$ro.$$href.
+
+As for actions, the intention is for the client to either respond immediately to a new value under $$ro.xxx.result.$$href, or ignore it. Therefore, any previously stored will be overwritten.
 </pre>
 
       </section>
@@ -318,9 +838,24 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="custom-finders" class="anchor" href="#custom-finders"><span class="octicon octicon-link"></span></a>Custom finders</h1>
 
 <pre>
+Use case: provide alternative mechanisms for retrieving representations
+
+Similar to the way that $resource allows custom actions to be defined, so does $spiroResource.  One difference is that whereas $resource actions are either 'instance' actions or 'class' actions, $spiroResource actions only correspond to 'class' actions, typically (always?) corresponding to service actions:
+
+when:
+var CreditCard = $spiroResource(
+                     "/objects/creditCard/:instanceId",
+                     {instanceId:'@num'},
+                     {
+                       findByName: "/services/creditCards/action/findByName/invoke",
+                       findExpired: "/services/creditCards/action/findExpired/invoke",
+                     });
+
+then:
+var cards = CreditCard.findByName({name: "Jones"})
 </pre>
 
       </section>
@@ -329,9 +864,65 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="disabled-members" class="anchor" href="#disabled-members"><span class="octicon octicon-link"></span></a>Disabled members</h1>
 
 <pre>
+Use case: some members may become disabled or enabled, and so we need a way to expose this fact easily so that the UI can reflect the fact.
+
+Rather than have Spiro attempt to manipulate the DOM, we expose the information under $$ro.  The UI component can then set up a watch expression on its scope.
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  customer: { ... },
+  recentPurchases: [ ... ],
+  $expireOn: ...,
+  $findPurchases: ...,
+  ...
+  $$ro: {
+    num: {
+      ...
+      disabled: true,
+      disabledReason: "Not modifiable."
+    },
+    name: {
+      ...
+      disabled: false
+    },
+    customer: {
+      ...
+      disabled: true,
+      disabledReason: "Use 'update customer' action to alter."
+    }
+    recentPurchases: {
+      ...
+      disabled: true,
+      disabledReason: "Read-only (derived) collection."
+    }
+    $expireOn: {
+      ...
+      disabled: true,
+      disabledReason: "This card has already been set to expire."
+    }
+    $findPurchases: {
+      ...
+      disabled: false
+    }
+    ...
+  }
+}
+
+Can then set up a watch expression, eg:
+
+<input ng-model="name" disabled="{{scope.$$ro.name.disabled}}">{{name}}</input>
+
+or more simply:
+
+<input ng-model="name" ng-disabled="$$ro.name.disabled">{{name}}</input>
 </pre>
 
       </section>
@@ -340,9 +931,34 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="invalid-properties" class="anchor" href="#invalid-properties"><span class="octicon octicon-link"></span></a>Invalid properties</h1>
 
 <pre>
+Use case: validate changes to properties before submitting, and feed back reason if invalid.
+
+Again, use a watch expression under $$ro.
+
+when:
+card.name="Mike_Smith!"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $$ro: {
+    ...
+    name: {
+      ...
+      invalid: true,
+      invalidReason: "Name can contain only alphabetic characters, space or hyphen '-'."
+    }
+    $$href: ...,
+    $$title: ...
+  }
+}
+
+then set up a watch expression on {{scope.$$ro.name.invalid}}.
 </pre>
 
       </section>
@@ -351,9 +967,41 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="invalid-action-parameter" class="anchor" href="#invalid-action-parameter"><span class="octicon octicon-link"></span></a>Invalid action parameter</h1>
 
 <pre>
+Use case: validate individual action parameter, and feedback if invalid.
+
+Again, approach is to use a watch expression under $$ro.
+
+eg:
+card.$expireOn({date: "2013-01-01"})
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $expireOn: ...,
+  ...
+  $$ro: {
+    ...
+    $expireOn: {
+      parameters: {
+        date: {
+          argument: "2013-01-01",   // automatically updated by Spiro on submit, see iteration #10
+          invalid: true,
+          invalidReason: "The expiry date must be in the future"
+        }
+      }
+      invalid: true
+    }
+  }
+}
+
+then set up a watch expression on {{$scope.$$ro.$expireOn.parameters.date.invalid}}.
+
+In addition, the $$ro.$expireOn.invalid is a convenience that allows a watch expression to be used to disable the OK button (meaning there is at least one validation error for one of the parameter arguments).
 </pre>
 
       </section>
@@ -362,9 +1010,34 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="invalid-action-parameters" class="anchor" href="#invalid-action-parameters"><span class="octicon octicon-link"></span></a>Invalid action parameters</h1>
 
 <pre>
+Use case: validate multiple action parameters, and feedback if invalid.
+
+Again, approach is to use a watch expression under $$ro.
+
+eg:
+card.$findPurchases({from: "2014-07-01", to: "2014-06-01"})
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $findPurchases: ...,
+  ...
+  $$ro: {
+    ...
+    $findPurchases: {
+      parameters: { ... }
+      invalid: true,
+      invalidReason: "The 'to' date must come after the 'from' date"
+    }
+  }
+}
+
+then set up a watch expression on {{scope.$$ro.$expireOn.invalid}}.  Unlike the previous use case, here it is the combination of arguments that are invalid, so the 'invalidReason' is at the same level as the 'invalid' property.
 </pre>
 
       </section>
@@ -373,9 +1046,56 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="property-choices" class="anchor" href="#property-choices"><span class="octicon octicon-link"></span></a>Property choices</h1>
 
 <pre>
+Use case: provide list of choices for a property
+
+Expose the choices under $$ro property.
+
+Suppose 'issuedBy' is a simple value property,
+
+eg:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  ...
+  $$ro: {
+    ...
+    issuedBy: {
+      ...
+      choices: [ "Visa", "Mastercard", "Amex" ]
+    }
+  }
+}
+
+~~
+Suppose instead 'issuedBy' is a reference property, then:
+
+returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  ...
+  $$ro: {
+    ...
+    issuedBy: {
+      choices: [ 
+        { $href: "http://localhost:8080/rest/objects/issuer/visa",
+          $title: "Visa" }, 
+        { $href: "http://localhost:8080/rest/objects/issuer/mastercard",
+          $title: "Mastercard" }, 
+        { $href: "http://localhost:8080/rest/objects/issuer/amex",
+          $title: "Amex" },
+      ]
+    }
+  }
+}
 </pre>
 
       </section>
@@ -384,9 +1104,71 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="property-auto-complete" class="anchor" href="#property-auto-complete"><span class="octicon octicon-link"></span></a>Property auto-complete</h1>
 
 <pre>
+Use case: start entering values and provide matching options.  NB: this concept seems to be called "typeahead" in AngularJS.
+
+Spiro sets up a watch on an "proposed" property under $$ro and populates choices with corresponding matches.  The client can set up its own watch on the resultant choices.
+
+eg if "clearingBank" is a reference property:
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  clearingBank: {
+    $href: "http://localhost:8080/rest/objects/bank/barclays",
+    $title: "Barclays"
+  }
+  $$ro: {
+    ...
+    clearingBank: {
+      ...
+      proposed: null,
+      choices: [ ]
+    }
+  }
+}
+
+when
+card.$$ro.clearingBank.proposed = "San"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  clearingBank: {
+    $href: "http://localhost:8080/rest/objects/bank/barclays",
+    $title: "Barclays"
+  }
+  $$ro: {
+    ...
+    clearingBank: {
+      ...
+      proposed: "San",
+      choices: [
+        {
+          $href: "http://localhost:8080/rest/objects/bank/santander",
+          $title: "Santander"
+        },
+        {
+          $href: "http://localhost:8080/rest/objects/bank/santa-monica",
+          $title: "Santa Monica Bank"
+        },
+        {
+          $href: "http://localhost:8080/rest/objects/bank/san-jose",
+          $title: "San Jose Banking Corp"
+        },
+        ...
+      ]
+    }
+  }
+}
 </pre>
 
       </section>
@@ -395,9 +1177,61 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="property-choices-conditional" class="anchor" href="#property-choices-conditional"><span class="octicon octicon-link"></span></a>Property choices (conditional)</h1>
 
 <pre>
+Use case: select choice from list of available choices, themselves dependent on other property choices.
+
+The API is the same as for unconditional property choices (iteration #19, above) except that Spiro automatically uses the values of the other properties when submitting to the property prompt resource.
+
+eg Suppose CreditCard can be categorized using 'category' and 'subcategory':
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-1",
+  subcategory: "SUBCAT-1-a",
+  ...
+  $$ro: {
+    ...
+    category: {
+      ...
+      choices: [ "CAT-1", "CAT-2", "CAT-3" ]
+    },
+    subcategory: {
+      ...
+      choices: [ "SUBCAT-1-a", "SUBCAT-1-b", "SUBCAT-1-c" ]
+    }
+  }
+}
+
+when:
+card.category = "CAT-2"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-2",
+  subcategory: "SUBCAT-2-a",
+  ...
+  $$ro: {
+    ...
+    category: {
+      ...
+      choices: [ "CAT-1", "CAT-2", "CAT-3" ]
+    },
+    subcategory: {
+      ...
+      choices: [ "SUBCAT-2-a", "SUBCAT-2-b", "SUBCAT-2-c" ]
+    }
+  }
+}
+
+Note that the subcategory property also changes as well as the list of choices for subcategory.  Computing these values is a server-side responsibility, but Spiro must automatically refresh the entire object representation whenever a property is updated.  In essence, this is an "HTTP redirect (to GET) after POST"
 </pre>
 
       </section>
@@ -406,9 +1240,12 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="property-auto-complete-conditional" class="anchor" href="#property-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Property auto-complete (conditional)</h1>
 
 <pre>
+Use case: start entering values and provide matching options, dependent on other property choices.
+
+The API is the same as unconditional auto-complete (iteration #20, above) except that Spiro automatically uses the values of the other properties when submitting to the property prompt resource.
 </pre>
 
       </section>
@@ -417,9 +1254,71 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="action-param-defaults" class="anchor" href="#action-param-defaults"><span class="octicon octicon-link"></span></a>Action param defaults</h1>
 
 <pre>
+Use case: render a dialog prompt with action arguments set to default values
+
+Spiro watches a property under $$ro to allow the developer to request the default argument values to be requested (similar to the way that a resolve can be requested on a collection).
+
+Suppose the 'expireOn(date)' action provides a default for its date parameter.
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+and:
+card.$$ro.$recategorize.parameters.category.argument="CAT-2"
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $expireOn: ...
+  ...
+  $$ro: {
+    ...
+    $expireOn: {
+      ...
+      parameters: {
+        date: {
+          argument: null,
+          ...
+        }
+      }
+      prompt: false,
+    }
+  }
+}
+
+Spiro watches $$ro.$expireOn.prompt.
+
+when:
+card.$$ro.$expireOn.prompt = true
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $expireOn: ...
+  ...
+  $$ro: {
+    ...
+    $expireOn: {
+      ...
+      parameters: {
+        date: {
+          argument: "2014-07-15",
+          ...
+        }
+      }
+      prompt: true,
+    }
+  }
+}
+
+causes Spiro to request and populate the default argument for each of the parameters of the action.
 </pre>
 
       </section>
@@ -428,9 +1327,72 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="action-param-choices" class="anchor" href="#action-param-choices"><span class="octicon octicon-link"></span></a>Action param choices</h1>
 
 <pre>
+Use case: select choice from list of available choices for an action parameter
+
+Suppose 'changeIssuedByOn(issuedBy, date)' is an action.  Spiro exposes list of choices under $$ro when prompted.
+
+eg:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+initially returns:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  $changeIssuedByOn: ...
+  ...
+  $$ro: {
+    ...
+    issuedBy: { ... },
+    $changeIssuedByOn: {
+      ...
+      parameters: {
+        issuedBy: {
+          ...
+          choices: null
+        },
+        date: { ... }
+      },
+      prompt: false
+    }
+  }
+}
+
+The "choices" property is present to indicate that choices are available for this parameter, but is set to null because they won't be computed until prompt is requested.
+
+when:
+card.$$ro.$changedIssuedByOn.prompt = true
+
+then :
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  $changeIssuedByOn: ...
+  ...
+  $$ro: {
+    ...
+    issuedBy: { ... },
+    $changeIssuedByOn: {
+      ...
+      parameters: {
+        issuedBy: {
+          ...
+          choices: [ "Visa", "Mastercard", "Amex" ]
+        },
+        date: { ... }
+      },
+      prompt: true
+    }
+  }
+}
+
+If 'issuedBy' parameter is a reference, then the choices are a list of {$$href:...,$$title:...} maps (same as for properties, iteration #19)
+
+If there are defaults (iteration #23) then these will also become available.
 </pre>
 
       </section>
@@ -439,13 +1401,314 @@ newCard.$save();
       
       <section>
         <h1>
-<a name="xxx" class="anchor" href="#xxx"><span class="octicon octicon-link"></span></a>Xxx</h1>
+<a name="action-param-auto-complete" class="anchor" href="#action-param-auto-complete"><span class="octicon octicon-link"></span></a>Action param auto-complete</h1>
 
 <pre>
+Use case: select action parameter from list of available choices, using a 'typeahead' parameter to filter
+
+Similarly to properties, Spiro sets up a watch on an "argument" property under $$ro and populates the choices.  The client can set up its own watch on the resultant choices.
+
+Suppose 'changeIssuedByOn(issuedBy, date)' is an action.
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  $changeIssuedByOn: ...
+  ...
+  $$ro: {
+    ...
+    issuedBy: { ... },
+    $changeIssuedByOn: {
+      ...
+      parameters: {
+        issuedBy: {
+          ...
+          argument: null,
+          choices: null
+        },
+        date: { ... }
+      },
+      prompt: false
+    }
+  }
+}
+
+as for previous iterations, "choices" is present to indicate that choices may be computed if a prompt is requested.
+
+when
+card.$$ro.$changeIssuedByOn.issuedBy.argument = "s"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  issuedBy: "Amex",
+  $changeIssuedByOn: ...
+  ...
+  $$ro: {
+    ...
+  $$ro: {
+    ...
+    issuedBy: { ... },
+    $changeIssuedByOn: {
+      ...
+      parameters: {
+        issuedBy: {
+          ...
+          argument: "s",
+          choices: [ "Visa", "Mastercard" ]
+        },
+        date: { ... }
+      },
+      prompt: true
+    }
+  }
+}
+
+Setting the value for any argument will implicitly set "prompt" to true, and so will retrieve defaults/choices for this parameter (filtered based on provided argument) and any other parameters of the action.
 </pre>
 
       </section>
--->
+
+      
+      
+      <section>
+        <h1>
+<a name="action-param-choices-conditional" class="anchor" href="#action-param-choices-conditional"><span class="octicon octicon-link"></span></a>Action param choices (conditional)</h1>
+
+<pre>
+Use case: The choices for one parameter depend upon those of another.
+
+Suppose that recategorizing a credit card is accomplished through a recategorize(category, subcategory) action:
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-1"
+  subcategory: "SUBCAT-1-c",
+  ...
+  $recategorize: ...
+  ...
+  $$ro: {
+    ...
+    $recategorize: {
+      parameters: {
+        category: {
+          ...
+          argument: null,
+          choices: null
+        }
+        subcategory: {
+          ...
+          argument: null,
+          choices: null
+        }
+      },
+      prompt: false
+    }
+  }
+}
+
+In the above the list of choices for the subcategory parameter is empty because the argument for "category" is still null
+
+when:
+card.$$ro.$recategorize.parameters.category.argument = "CAT-2"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-1"
+  subcategory: "SUBCAT-1-c",
+  ...
+  $recategorize: ...
+  ...
+  $$ro: {
+    ...
+    $recategorize: {
+      parameters: {
+        category: {
+          ...
+          argument: "CAT-2",
+          choices: [ "CAT-1", "CAT-2", "CAT-3" ]
+        }
+        subcategory: {
+          ...
+          argument: null,
+          choices: [ "SUBCAT-2-a", "SUBCAT-2-b", "SUBCAT-2-c" ] 
+        }
+      },
+      prompt: true
+    }
+  }
+}
+
+implicitly sets up the prompt, computes the choices for category parameter, and computes the subcategory choices based on the category argument 
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="action-param-auto-complete-conditional" class="anchor" href="#action-param-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Action param auto-complete (conditional)</h1>
+
+<pre>
+Use case: select action parameter from list of available choices which are dependent on other parameters, using a 'typeahead' parameter to filter
+
+Suppose that recategorizing a credit card is accomplished through a recategorize(category, subcategory) action, but where the choices for subcategory is filtered based on a "typeahead" value.
+
+given:
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+
+and:
+card.$$ro.$recategorize.parameters.category.argument="CAT-2"
+
+returning:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-1"
+  subcategory: "SUBCAT-1-c",
+  ...
+  $recategorize: ...
+  ...
+  $$ro: {
+    ...
+    $recategorize: {
+      parameters: {
+        category: {
+          ...
+          argument: "CAT-2",
+          choices: [ "CAT-1", "CAT-2", "CAT-3" ]
+        }
+        subcategory: {
+          ...
+          argument: null,
+          choices: [ ] 
+        }
+      },
+      prompt: true
+    }
+  }
+}
+
+In the above the prompt has been requested implicitly because an argument for category paramter was set, and this also caused the list of choices for the category parameter to be computed.  However, the subcategory argument is still null and so the choices for the subcategory is empty also.
+
+when:
+card.$$ro.$recategorize.parameters.subcategory.argument = "b"
+
+then:
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  category: "CAT-1"
+  subcategory: "SUBCAT-1-c",
+  ...
+  $recategorize: ...
+  ...
+  $$ro: {
+    ...
+    $recategorize: {
+      parameters: {
+        category: {
+          ...
+          argument: "CAT-2",
+          choices: [ "CAT-1", "CAT-2", "CAT-3" ]
+        }
+        subcategory: {
+          ...
+          argument: "b",
+          choices: [ "SUBCAT-2-bar", "SUBCAT-2-baz", "SUBCAT-2-fab", "SUBCAT-2-pbl" ] 
+        }
+      }
+    }
+  }
+}
+
+entering an argument for subcategory parameter now populates the choices for those matching the category and filtered by the subcategory search arg.
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="delete" class="anchor" href="#delete"><span class="octicon octicon-link"></span></a>delete()</h1>
+
+<pre>
+Use case: allow objects to be deleted using an API similar to that surfaced by $resource.
+
+$resource provides delete() / remove() as "standard" actions; these perform an HTTP DELETE against the URL.  $spiroResource provide something very similar.
+
+given
+var cc = CreditCard.get({instanceId: 123})
+
+when:
+cc.$delete()
+
+then:
+??? what are the post-conditions for $$resource ??
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="further-ideas" class="anchor" href="#further-ideas"><span class="octicon octicon-link"></span></a>Further ideas...</h1>
+
+<pre>
+* warnings
+* HTTP status codes
+* error handling
+* support for optimistic locking
+* alternative syntax for update properties:  write to $$ro.property.proposed
+* support for SignalR/web sockets automatic updates
+</pre>
+
+      </section>
+
+      
+      
+      <section>
+        <h1>
+<a name="save" class="anchor" href="#save"><span class="octicon octicon-link"></span></a>save()</h1>
+
+<pre>
+Use case: allow objects to be created using an API similar to that surfaced by $resource.
+
+$resource provides save() as a standard action; this performs an HTTP POST against the URL.  $spiroResource provides something very similar.
+
+given:
+var newCard = new CreditCard({number:'1234-5678-9090-1212', name: "John Doe"});
+
+when:
+newCard.$save();
+
+then:
+{
+  num: "1234-5678-9090-1212",
+  name: "John Doe",
+  ...
+}
+
+and HTTP status code 201
+</pre>
+
+      </section>
       
       
       <footer>
