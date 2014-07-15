@@ -113,4 +113,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>cd  $(SolutionDir)\packages\Spiro.Models*\content\Scripts
+xcopy *  $(SolutionDir)\Scripts</PreBuildEvent>
+  </PropertyGroup>
 </Project>
