@@ -19,3 +19,5 @@ source/Scripts/jasmine-samples/Player.js
 source/Scripts/jasmine-samples/PlayerSpec.js
 source/Scripts/jasmine-samples/Song.js
 source/Scripts/jasmine-samples/SpecHelper.js
+source/test-results/karma-test-results.xml
+source/coverage/Firefox 30.0.0 (Windows)/cobertura-coverage.xml

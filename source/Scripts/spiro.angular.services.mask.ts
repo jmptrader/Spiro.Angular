@@ -1,7 +1,6 @@
 /// <reference path="typings/underscore/underscore.d.ts" />
 /// <reference path="spiro.models.ts" />
 
-
 module Spiro.Angular {
 
     export interface ILocalFilter {
