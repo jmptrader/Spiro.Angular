@@ -7,4 +7,4 @@ var Spiro;
     })(Spiro.Angular || (Spiro.Angular = {}));
     var Angular = Spiro.Angular;
 })(Spiro || (Spiro = {}));
-//# sourceMappingURL=spiro.ph.app.js.map
+//# sourceMappingURL=spiro.placeholder.app.js.map

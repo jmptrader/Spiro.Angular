@@ -31,6 +31,10 @@
     <Content Include="Scripts\spiro.angular.services.color.js" />
     <Content Include="Scripts\spiro.angular.services.mask.js" />
     <Content Include="Scripts\spiro.angular.services.representationloader.js" />
+    <Content Include="Scripts\spiro.config.js" />
+    <Content Include="Scripts\spiro.models.helpers.js" />
+    <Content Include="Scripts\spiro.models.js" />
+    <Content Include="Scripts\spiro.models.shims.js" />
     <Content Include="Scripts\spiro.placeholder.app.js" />
     <Content Include="Scripts\typings\angularjs\angular-animate.d.ts" />
     <Content Include="Scripts\typings\angularjs\angular-cookies.d.ts" />
@@ -43,12 +47,12 @@
     <Content Include="Scripts\typings\jasmine\jasmine-1.3.d.ts" />
     <Content Include="Scripts\typings\underscore\underscore.d.ts" />
     <Content Include="SpiroReadMe.txt" />
+    <TypeScriptCompile Include="Scripts\spiro.config.ts" />
+    <TypeScriptCompile Include="Scripts\spiro.models.helpers.ts" />
+    <TypeScriptCompile Include="Scripts\spiro.models.shims.ts" />
+    <TypeScriptCompile Include="Scripts\spiro.models.ts" />
     <TypeScriptCompile Include="Scripts\spiro.placeholder.app.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.config.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.helpers.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\Spiro.Models\spiro.models.shims.d.ts" />
     <TypeScriptCompile Include="Tests\specs\colorService.ts" />
     <Content Include="Tests\specs\colorService.js" />
     <TypeScriptCompile Include="Tests\specs\helpers.ts" />

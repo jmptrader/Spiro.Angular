@@ -11,3 +11,6 @@ source/Scripts/spiro.models.shims.js
 source/Scripts/spiro.models.shims.ts
 source/Scripts/spiro.models.js
 source/Scripts/spiro.models.ts
+source/Tests/specs/maskService.js.map
+source/Tests/specs/helpers.js.map
+source/Tests/specs/colorService.js.map
