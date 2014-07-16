@@ -26,7 +26,6 @@
     <TypeScriptCompile Include="Scripts\spiro.angular.services.loaderwithtransform.ts" />
     <Content Include="Content\jasmine\jasmine.css" />
     <Content Include="Content\jasmine\jasmine_favicon.png" />
-    <Content Include="karma.conf.js" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular-route.js" />
     <Content Include="Scripts\angular-route.min.js" />

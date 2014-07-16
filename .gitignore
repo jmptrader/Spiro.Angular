@@ -22,3 +22,5 @@ source/Scripts/jasmine-samples/SpecHelper.js
 source/test-results/karma-test-results.xml
 source/coverage/Firefox 30.0.0 (Windows)/cobertura-coverage.xml
 source/coverage/IE 11.0.0 (Windows)/cobertura-coverage.xml
+coverage/IE 11.0.0 (Windows)/cobertura-coverage.xml
+test-results/karma-test-results.xml

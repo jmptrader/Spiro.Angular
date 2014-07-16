@@ -12,25 +12,25 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-
+      
     // list of files / patterns to load in the browser
     files: [
-      'Scripts/underscore.js',
-      'Scripts/angular.js',
-      'Scripts/angular-route.js',
-      'Scripts/angular-touch.js',
-      'Scripts/angular-mocks.js',
-      'Scripts/spiro.placeholder.app.js',
-      'Scripts/spiro.config.js',
-      'Scripts/spiro.models.helpers.js',
-      'Scripts/spiro.models.shims.js',
-      'Scripts/spiro.models.js',    
-      'Scripts/spiro.angular.services.representationloader.js',
-      'Scripts/spiro.angular.services.color.js',
-      'Scripts/spiro.angular.services.mask.js',
-      'Tests/specs/helpers.js',
-      'Tests/specs/colorService.js',
-      'Tests/specs/maskService.js'    
+      'source/Scripts/underscore.js',
+      'source/Scripts/angular.js',
+      'source/Scripts/angular-route.js',
+      'source/Scripts/angular-touch.js',
+      'source/Scripts/angular-mocks.js',
+      'source/Scripts/spiro.placeholder.app.js',
+      'source/Scripts/spiro.config.js',
+      'source/Scripts/spiro.models.helpers.js',
+      'source/Scripts/spiro.models.shims.js',
+      'source/Scripts/spiro.models.js',
+      'source/Scripts/spiro.angular.services.representationloader.js',
+      'source/Scripts/spiro.angular.services.color.js',
+      'source/Scripts/spiro.angular.services.mask.js',
+      'source/Tests/specs/helpers.js',
+      'source/Tests/specs/colorService.js',
+      'source/Tests/specs/maskService.js'
     ],
 
 
