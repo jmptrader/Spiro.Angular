@@ -198,16 +198,16 @@ newCard.$save();
 <a name="flattened-value-properties" class="anchor" href="#flattened-value-properties"><span class="octicon octicon-link"></span></a>Flattened value properties</h1>
 
           <div class="use-case">
-          <h3>Use case</h3>
-          <p>
-            Enable simple bindings of property values into the UI, via <code>$scope</code>.
-          </p>
+              <h3>Use case</h3>
+              <p>
+                Enable simple bindings of property values into the UI, via <code>$scope</code>.
+              </p>
           </div>
 
             <p>
           Define a resource similarly to the way in which a resource would be defined using $resource:
             </p>
-          <p>Given:</p>
+          <h3>Given:</h3>
 <pre>
 var CreditCard = $spiroResource(
                      "/objects/:domainType/:instanceId",
@@ -222,11 +222,14 @@ where:
           </p>
 
           <p>Like <code>$resource</code>, <code>$spiroResource</code> supports HTTP GET with the <code>get()</code> standard action.</p>
-<p>When:</p>
+
+          <h3>When:</h3>
 <pre>
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
-          <p>Then the result of a get() is a transformed result which flattens for easy binding to <code>$scope</code>:
+
+          <h3>Then:</h3>
+          <p>the result of a get() is a transformed result which flattens for easy binding to <code>$scope</code>:
 <pre>
 {
   num: "1234-5678-9012-3456",
@@ -255,8 +258,14 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
         <h1>
 <a name="ro-access" class="anchor" href="#ro-access"><span class="octicon octicon-link"></span></a>$$ro access</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Support arbitrary more sophisticated use cases through the RO representations..
+              </p>
+          </div>
+
 <pre>
-Use case: support arbitrary more sophisticated use cases through the RO representations.
 
 Spiro appends an additional property "$$ro", which provides access to the RO "Object" representation ($$ro.$$href) and the object's title ($$ro.$$title)
 
@@ -285,8 +294,19 @@ card.$$ro.$$title
         <h1>
 <a name="property-metadata" class="anchor" href="#property-metadata"><span class="octicon octicon-link"></span></a>Property Metadata</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Provide hints to indicate the datatypes, also other metadata information.   
+              </p>
+          </div>
+
+          <h3>Given:</h3>
+          <h3>When:</h3>
+          <h3>Then:</h3>
+
 <pre>
-Use case: provide hints to indicate the datatypes, also other metadata information.   
+
 
 This makes the API more discoverable, but also enables more sophisticated UI widgets to consume the data (possibly even completely generic ultimately).  It also establishes some structure on which future iterations build.
 
@@ -326,9 +346,14 @@ then:
         <h1>
 <a name="lazy-resolving" class="anchor" href="#lazy-resolving"><span class="octicon octicon-link"></span></a>Lazy Resolving</h1>
 
-<pre>
-Use case: determination and management of resolving of the representation
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Determination and management of resolving of the representation
+              </p>
+          </div>
 
+<pre>
 Angular's $resource is intended to return a representation that can be bound immediately into the scope.  Then, when the (async) request completes, $resource updates the representation; any UI widgets are automatically updated.
 
 Angular also allows indicates whether this has happened using a "resolved" property.
@@ -378,8 +403,14 @@ $$scope.$$ro.$$promise.then(function() { ... })
         <h1>
 <a name="reference-properties" class="anchor" href="#reference-properties"><span class="octicon octicon-link"></span></a>Reference Properties</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Enable rendering of references to other representations.
+              </p>
+          </div>
+
 <pre>
-Use case: enable rendering of references to other representations.
 
 Extends the representation so that reference properties are also part of the representation.
 
@@ -418,8 +449,15 @@ In the metadata, the "$$ro.customer.dataType" holds the (compile-time) domainTyp
         <h1>
 <a name="hateoas-support" class="anchor" href="#hateoas-support"><span class="octicon octicon-link"></span></a>HATEOAS Support</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Support Hateoas traversal (eg to customer.$$href in previous iteration, or to collections, or to results of action)
+              </p>
+          </div>
+
 <pre>
-Use case: Support Hateoas traversal (eg to customer.$$href in previous iteration, or to collections, or to results of action)
+
 
 $spiroResource defines getUrl() as an additional "standard" action.  This acts somewhat like get(), but accepts a URL instead.
 
@@ -443,8 +481,15 @@ then:
         <h1>
 <a name="collections-as-lists" class="anchor" href="#collections-as-lists"><span class="octicon octicon-link"></span></a>Collections as lists</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Enable rendering of collections in lists.
+              </p>
+          </div>
+
 <pre>
-Use Case: enable rendering of collections in lists.
+
 
 Extend the representation to include collections, eagerly resolved and showing titles (so can be rendered in a list)
 
@@ -494,8 +539,15 @@ In the metadata:
         <h1>
 <a name="collections-as-tables" class="anchor" href="#collections-as-tables"><span class="octicon octicon-link"></span></a>Collections as tables</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Enable rendering of collections in tables.
+              </p>
+          </div>
+
 <pre>
-Use Case: enable rendering of collections in tables.
+
 
 Extend the eagerly resolved representation to include other properties (so can be rendered in a table)
 
@@ -552,8 +604,15 @@ Whether a list (previous iteration) or the full table representation (this itera
         <h1>
 <a name="lazy-resolving-of-collections" class="anchor" href="#lazy-resolving-of-collections"><span class="octicon octicon-link"></span></a>Lazy resolving of collections</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Accessing a collection (eg to render it) should automatically resolve the collection.
+              </p>
+          </div>
+
 <pre>
-Use case: Accessing a collection (eg to render it) should automatically resolve the collection
+
 
 By default, returns a placeholder for the collection:
 
@@ -616,8 +675,15 @@ card.$$ro.recentPurchases.promise.then(function(){ ... })
         <h1>
 <a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Enable domain object actions to be invoked.
+              </p>
+          </div>
+
 <pre>
-Use case: enable domain object actions to be invoked.
+
 
 Whereas $resource requires custom 'actions' to be explicitly mapped, Spiro should automatically map any domain object actions provided by RO as actions on the $spiroResource instance).  Following $resource's convention, these are all invoked with a '$' prefix.
 
@@ -689,8 +755,15 @@ After the action is invoked, Spiro must automatically refresh the entire object 
         <h1>
 <a name="action-results" class="anchor" href="#action-results"><span class="octicon octicon-link"></span></a>Action results</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Make the results of an action available to the client (HATEOAS support)
+              </p>
+          </div>
+
 <pre>
-Use case: make the results of an action available to the client (HATEOAS support)
+
 
 $resource's actions always return an updated representation of the same object; there is no real HATEOAS support.  RO in contrast hardly ever returns the same representation.
 
@@ -841,8 +914,15 @@ then:
         <h1>
 <a name="automatically-updated-properties" class="anchor" href="#automatically-updated-properties"><span class="octicon octicon-link"></span></a>Automatically updated properties</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Updating the values bound to the scope should automatically update the server via the RO REST API
+              </p>
+          </div>
+
 <pre>
-Use case: updating the values bound to the scope should automatically update the server via the RO REST API
+
 
 Whereas $resource does not automatically provide any sort of 'update' (only CRD of CRUD), with Spiro we can automatically update properties by binding to the scope.
 
@@ -871,8 +951,15 @@ A slight issue here is that if the property that has dependents on it (as addres
         <h1>
 <a name="updating-view-models" class="anchor" href="#updating-view-models"><span class="octicon octicon-link"></span></a>Updating view models</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Support editable view models (Isis' implementation)
+              </p>
+          </div>
+
 <pre>
-Use case: support editable view models (Isis' implementation)
+
 
 Normally updating a property will mutate that object and return a representation of that object; but in theory (and in Isis' view model implementation) the target object could be immutable and instead return the URL of a new modified target object in its stead.  Thus, invoking a property modification could result in a new resource to fetch.  This can be captured in $$ro.property.result, same as for actions.
 
@@ -919,8 +1006,15 @@ As for actions, the intention is for the client to either respond immediately to
         <h1>
 <a name="custom-finders" class="anchor" href="#custom-finders"><span class="octicon octicon-link"></span></a>Custom finders</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Provide alternative mechanisms for retrieving representations
+              </p>
+          </div>
+
 <pre>
-Use case: provide alternative mechanisms for retrieving representations
+
 
 Similar to the way that $resource allows custom actions to be defined, so does $spiroResource.  One difference is that whereas $resource actions are either 'instance' actions or 'class' actions, $spiroResource actions only correspond to 'class' actions, typically (always?) corresponding to service actions:
 
@@ -945,8 +1039,15 @@ var cards = CreditCard.findByName({name: "Jones"})
         <h1>
 <a name="disabled-members" class="anchor" href="#disabled-members"><span class="octicon octicon-link"></span></a>Disabled members</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Some members may become disabled or enabled, and so we need a way to expose this fact easily so that the UI can reflect the fact.
+              </p>
+          </div>
+
 <pre>
-Use case: some members may become disabled or enabled, and so we need a way to expose this fact easily so that the UI can reflect the fact.
+
 
 Rather than have Spiro attempt to manipulate the DOM, we expose the information under $$ro.  The UI component can then set up a watch expression on its scope.
 
@@ -1012,8 +1113,15 @@ or more simply:
         <h1>
 <a name="invalid-properties" class="anchor" href="#invalid-properties"><span class="octicon octicon-link"></span></a>Invalid properties</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Validate changes to properties before submitting, and feed back reason if invalid.
+              </p>
+          </div>
+
 <pre>
-Use case: validate changes to properties before submitting, and feed back reason if invalid.
+
 
 Again, use a watch expression under $$ro.
 
@@ -1048,8 +1156,14 @@ then set up a watch expression on {{scope.$$ro.name.invalid}}.
         <h1>
 <a name="invalid-action-parameter" class="anchor" href="#invalid-action-parameter"><span class="octicon octicon-link"></span></a>Invalid action parameter</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Validate individual action parameter, and feedback if invalid.
+              </p>
+          </div>
+
 <pre>
-Use case: validate individual action parameter, and feedback if invalid.
 
 Again, approach is to use a watch expression under $$ro.
 
@@ -1091,8 +1205,15 @@ In addition, the $$ro.$expireOn.invalid is a convenience that allows a watch exp
         <h1>
 <a name="invalid-action-parameters" class="anchor" href="#invalid-action-parameters"><span class="octicon octicon-link"></span></a>Invalid action parameters</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Validate multiple action parameters, and feedback if invalid.
+              </p>
+          </div>
+
 <pre>
-Use case: validate multiple action parameters, and feedback if invalid.
+
 
 Again, approach is to use a watch expression under $$ro.
 
@@ -1127,8 +1248,15 @@ then set up a watch expression on {{scope.$$ro.$expireOn.invalid}}.  Unlike the 
         <h1>
 <a name="property-choices" class="anchor" href="#property-choices"><span class="octicon octicon-link"></span></a>Property choices</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Provide list of choices for a property
+              </p>
+          </div>
+
 <pre>
-Use case: provide list of choices for a property
+
 
 Expose the choices under $$ro property.
 
@@ -1185,8 +1313,15 @@ returns:
         <h1>
 <a name="property-auto-complete" class="anchor" href="#property-auto-complete"><span class="octicon octicon-link"></span></a>Property auto-complete</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Start entering values and provide matching options.  NB: this concept seems to be called "typeahead" in AngularJS.
+              </p>
+          </div>
+
 <pre>
-Use case: start entering values and provide matching options.  NB: this concept seems to be called "typeahead" in AngularJS.
+
 
 Spiro sets up a watch on an "proposed" property under $$ro and populates choices with corresponding matches.  The client can set up its own watch on the resultant choices.
 
@@ -1258,8 +1393,15 @@ then:
         <h1>
 <a name="property-choices-conditional" class="anchor" href="#property-choices-conditional"><span class="octicon octicon-link"></span></a>Property choices (conditional)</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Select choice from list of available choices, themselves dependent on other property choices.
+              </p>
+          </div>
+
 <pre>
-Use case: select choice from list of available choices, themselves dependent on other property choices.
+
 
 The API is the same as for unconditional property choices (iteration #19, above) except that Spiro automatically uses the values of the other properties when submitting to the property prompt resource.
 
@@ -1321,8 +1463,15 @@ Note that the subcategory property also changes as well as the list of choices f
         <h1>
 <a name="property-auto-complete-conditional" class="anchor" href="#property-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Property auto-complete (conditional)</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Start entering values and provide matching options, dependent on other property choices.
+              </p>
+          </div>
+
 <pre>
-Use case: start entering values and provide matching options, dependent on other property choices.
+
 
 The API is the same as unconditional auto-complete (iteration #20, above) except that Spiro automatically uses the values of the other properties when submitting to the property prompt resource.
 </pre>
@@ -1335,8 +1484,15 @@ The API is the same as unconditional auto-complete (iteration #20, above) except
         <h1>
 <a name="action-param-defaults" class="anchor" href="#action-param-defaults"><span class="octicon octicon-link"></span></a>Action param defaults</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Render a dialog prompt with action arguments set to default values
+              </p>
+          </div>
+
 <pre>
-Use case: render a dialog prompt with action arguments set to default values
+
 
 Spiro watches a property under $$ro to allow the developer to request the default argument values to be requested (similar to the way that a resolve can be requested on a collection).
 
@@ -1408,8 +1564,15 @@ causes Spiro to request and populate the default argument for each of the parame
         <h1>
 <a name="action-param-choices" class="anchor" href="#action-param-choices"><span class="octicon octicon-link"></span></a>Action param choices</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Select choice from list of available choices for an action parameter
+              </p>
+          </div>
+
 <pre>
-Use case: select choice from list of available choices for an action parameter
+
 
 Suppose 'changeIssuedByOn(issuedBy, date)' is an action.  Spiro exposes list of choices under $$ro when prompted.
 
@@ -1482,8 +1645,15 @@ If there are defaults (iteration #23) then these will also become available.
         <h1>
 <a name="action-param-auto-complete" class="anchor" href="#action-param-auto-complete"><span class="octicon octicon-link"></span></a>Action param auto-complete</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                select action parameter from list of available choices, using a 'typeahead' parameter to filter
+              </p>
+          </div>
+
 <pre>
-Use case: select action parameter from list of available choices, using a 'typeahead' parameter to filter
+
 
 Similarly to properties, Spiro sets up a watch on an "argument" property under $$ro and populates the choices.  The client can set up its own watch on the resultant choices.
 
@@ -1560,8 +1730,15 @@ Setting the value for any argument will implicitly set "prompt" to true, and so 
         <h1>
 <a name="action-param-choices-conditional" class="anchor" href="#action-param-choices-conditional"><span class="octicon octicon-link"></span></a>Action param choices (conditional)</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                The choices for one parameter depend upon those of another.
+              </p>
+          </div>
+
 <pre>
-Use case: The choices for one parameter depend upon those of another.
+The choices for one parameter depend upon those of another.
 
 Suppose that recategorizing a credit card is accomplished through a recategorize(category, subcategory) action:
 
@@ -1642,8 +1819,14 @@ implicitly sets up the prompt, computes the choices for category parameter, and 
         <h1>
 <a name="action-param-auto-complete-conditional" class="anchor" href="#action-param-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Action param auto-complete (conditional)</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Select action parameter from list of available choices which are dependent on other parameters, using a 'typeahead' parameter to filter
+              </p>
+          </div>
+
 <pre>
-Use case: select action parameter from list of available choices which are dependent on other parameters, using a 'typeahead' parameter to filter
 
 Suppose that recategorizing a credit card is accomplished through a recategorize(category, subcategory) action, but where the choices for subcategory is filtered based on a "typeahead" value.
 
@@ -1726,8 +1909,15 @@ entering an argument for subcategory parameter now populates the choices for tho
         <h1>
 <a name="delete" class="anchor" href="#delete"><span class="octicon octicon-link"></span></a>delete()</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Allow objects to be deleted using an API similar to that surfaced by $resource.
+              </p>
+          </div>
+
 <pre>
-Use case: allow objects to be deleted using an API similar to that surfaced by $resource.
+
 
 $resource provides delete() / remove() as "standard" actions; these perform an HTTP DELETE against the URL.  $spiroResource provide something very similar.
 
@@ -1749,8 +1939,15 @@ then:
         <h1>
 <a name="save" class="anchor" href="#save"><span class="octicon octicon-link"></span></a>save()</h1>
 
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Allow objects to be created using an API similar to that surfaced by $resource.
+              </p>
+          </div>
+
 <pre>
-Use case: allow objects to be created using an API similar to that surfaced by $resource.
+
 
 $resource provides save() as a standard action; this performs an HTTP POST against the URL.  $spiroResource provides something very similar.
 
