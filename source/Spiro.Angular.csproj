@@ -45,6 +45,8 @@
     <Content Include="Scripts\spiro.models.js" />
     <Content Include="Scripts\spiro.models.shims.js" />
     <Content Include="Scripts\spiro.placeholder.app.js" />
+    <Content Include="Scripts\underscore-min.js" />
+    <Content Include="Scripts\underscore.js" />
     <Content Include="SpiroReadMe.txt" />
     <TypeScriptCompile Include="Scripts\spiro.config.ts" />
     <TypeScriptCompile Include="Scripts\spiro.models.helpers.ts" />
@@ -76,6 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\angular-route.min.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\underscore-min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
