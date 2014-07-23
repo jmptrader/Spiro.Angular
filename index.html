@@ -266,37 +266,18 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
           </div>
 
           <p>
-              TODO - general discussion
+              Spiro appends an additional property <code>$$ro</code>, which holds (reformatted) additional
+              properties about the object obtained from the underlying Restful Objects representations.  In particular,
+              it provides the <code>$$ro.$$href</code> to access the RO "Object" representation and
+              <code>$$ro.$$title</code> to obtain the object's (human-friendly) title.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-Spiro appends an additional property "$$ro", which provides access to the RO "Object" representation ($$ro.$$href) and the object's title ($$ro.$$title)
-
-when:
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -306,9 +287,22 @@ then:
   }
 }
 
-eg
-card.$$ro.$$title
+//
 </pre>
+          <h3>And then:</h3>
+<pre>
+card.$$ro.$$title // returns the title of the CreditCard object
+</pre>
+
+          <!--
+          <h3>See also</h3>
+          <ul>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+          -->
 
       </section>
 
