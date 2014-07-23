@@ -282,12 +282,11 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
   $$ro: {
-    $$href: "http://localhost:8080/rest/objects/creditCard/1234-5678-9012-3456",
+    $$href:
+      "http://localhost:8080/rest/objects/creditCard/1234-5678-9012-3456",
     $$title: "1234-5678-9012-3456 (Mike Smith)"
   }
 }
-
-//
 </pre>
           <h3>And then:</h3>
 <pre>
@@ -320,38 +319,16 @@ card.$$ro.$$title // returns the title of the CreditCard object
           </div>
 
           <p>
-              TODO - general discussion
+              The idea here is to enable more sophisticated UI widgets to consume the data (possibly even completely
+              generic ultimately).  It also establishes some structure on which subsequent features build.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-This makes the API more discoverable, but also enables more sophisticated UI widgets to consume the data (possibly even completely generic ultimately).  It also establishes some structure on which future iterations build.
-
-when:
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -376,6 +353,16 @@ then:
 }
 </pre>
 
+          <!--
+          <h3>See also</h3>
+          <ul>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+            -->
+
       </section>
 
       
@@ -392,49 +379,41 @@ then:
           </div>
 
           <p>
-              TODO - general discussion
+              Angular's <code>$resource</code> is intended to return a representation that can be bound immediately
+              into the scope.  Then, when the (async) request completes, $resource updates the representation; any UI
+              widgets are automatically updated.
+          </p>
+          <p>
+              Angular also allows indicates whether this has happened using a "resolved" property.
+          </p>
+          <p>
+              Following <code>$resource</code>'s lead, the <code>$$ro.$$resolved</code> property indicates if the
+              representation has been resolved yet, and <code>$$ro.$$promise</code> provides access to the pending
+              promise, eg to register additional completion callbacks.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-Angular's $resource is intended to return a representation that can be bound immediately into the scope.  Then, when the (async) request completes, $resource updates the representation; any UI widgets are automatically updated.
-
-Angular also allows indicates whether this has happened using a "resolved" property.
-
-Following $resource's lead, the $$ro.$$resolved property indicates if the representatoin has been resolved yet, and $$ro.$$promise provides access to the pending promise, eg to register additional completion callbacks.
-
-when:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then initially returns:
+</pre>
+          <h3>Then initially returns:</h3>
+<pre>
 {
-  $$ro: { 
+  $$ro: {
     ...,
     $$resolved: false,
     $$promise: ...
   }
 }
+</pre>
 
-when the underlying async call has completed, the map is dynamically updated:
+          <h3>And when:</h3>
+        <p>
+            ... the underlying async call has completed
+        </p>
+          <h3>Then:</h3>
+          <p>the map is dynamically updated:</p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -445,17 +424,37 @@ when the underlying async call has completed, the map is dynamically updated:
     $$title: "1234-5678-9012-3456 (Mike Smith)"
   }
 }
+</pre>
 
-The client can therefore set up a watch on {{$scope.$$ro.$$resolved}} and use as a mechanism to be triggered when complete successfully.  One possibility is to use as the value of an ng-show directive:
+          <h3>Discussion</h3>
+          <p>
+              The client can therefore set up a watch on <code>{{$scope.$$ro.$$resolved}}</code> and use as a
+              mechanism to be triggered when complete successfully.  One possibility is to use as the value of an
+              <code>ng-show</code> directive:
+          </p>
 
-<div ng-show="$$ro.$$resolved">
-  <label>{{name}}</label>
-</div>
+<pre>
+&lt;div ng-show=&quot;$$ro.$$resolved&quot;&gt;
+    &lt;label&gt;{{name}}&lt;/label&gt;
+&lt;/div&gt;
+</pre>
 
-Or, the client can add callbacks:
-
+          <p>
+              Or, the client can add callbacks:
+          </p>
+<pre>
 $$scope.$$ro.$$promise.then(function() { ... })
 </pre>
+
+          <!--
+          <h3>See also</h3>
+          <ul>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+          -->
 
       </section>
 
