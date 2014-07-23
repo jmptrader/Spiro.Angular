@@ -248,12 +248,12 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
           <h3>Implementation Notes</h3>
           <p>
-              The already-spiked response transformer does the flattening.
+              The already-spiked "response transformer" does the flattening.
           </p>
+
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="ro-access" class="anchor" href="#ro-access"><span class="octicon octicon-link"></span></a>$$ro access</h1>
@@ -309,8 +309,7 @@ card.$$ro.$$title
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="property-metadata" class="anchor" href="#property-metadata"><span class="octicon octicon-link"></span></a>Property Metadata</h1>
@@ -360,6 +359,7 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
           <!--
           <h3>See also</h3>
           <ul>
+            TODO - do we also have use cases that surface the metadata for collections, actions and action parameters and also the object types themselves?
           </ul>
 
           <h3>Implementation Notes</h3>
@@ -369,8 +369,7 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="lazy-resolving" class="anchor" href="#lazy-resolving"><span class="octicon octicon-link"></span></a>Lazy Resolving</h1>
@@ -413,7 +412,7 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
           <h3>And when:</h3>
         <p>
-            ... the underlying async call has completed
+            ... the underlying async call has completed ...
         </p>
           <h3>Then:</h3>
           <p>the map is dynamically updated:</p>
@@ -450,20 +449,9 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 $$scope.$$ro.$$promise.then(function() { ... })
 </pre>
 
-          <!--
-          <h3>See also</h3>
-          <ul>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-          </p>
-          -->
-
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="reference-properties" class="anchor" href="#reference-properties"><span class="octicon octicon-link"></span></a>Reference Properties</h1>
@@ -476,45 +464,16 @@ $$scope.$$ro.$$promise.then(function() { ... })
           </div>
 
           <p>
-              TODO - general discussion
+              As well as simple scalar value properties, the object representation should also include (scalar)
+              references to (the resources of) related objects.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-Extends the representation so that reference properties are also part of the representation.
-
-when:
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -532,16 +491,31 @@ then:
     }
   }
 }
-
-Here "customer" is a map containing an href ($$href) to another object.  The title ($$title) is also provided so client can render the link with a human-readable description.
-
-In the metadata, the "$$ro.customer.dataType" holds the (compile-time) domainType of the referenced resource.
 </pre>
+
+          <h3>Discussion</h3>
+          <p>
+              Here <code>customer</code> is a map containing an href (<code>$$href</code>) to another object.  The
+              title (<code>$$title</code>) is also provided so client can render the link with a human-readable
+              description.
+          </p>
+          <p>
+              In the metadata, the <code>$$ro.customer.dataType</code> holds the (compile-time) domain type of the
+              referenced resource.
+          </p>
+
+<pre>
+</pre>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#flattened-value-properties">Value properties</a></li>
+          </ul>
+
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="hateoas-support" class="anchor" href="#hateoas-support"><span class="octicon octicon-link"></span></a>HATEOAS Support</h1>
@@ -554,46 +528,17 @@ In the metadata, the "$$ro.customer.dataType" holds the (compile-time) domainTyp
           </div>
 
           <p>
-              TODO - general discussion
+              <code>$spiroResource</code> defines <code>getUrl()</code> as an additional "standard" action.  This acts
+              somewhat like <code>get()</code>, but accepts a URL instead.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.getUrl(
+               "http://localhost:8080/rest/objects/creditcard/1234-5678-9012-3456")
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-$spiroResource defines getUrl() as an additional "standard" action.  This acts somewhat like get(), but accepts a URL instead.
-
-when:
-var card = CreditCard.getUrl("http://localhost:8080/rest/objects/creditcard/1234-5678-9012-3456")
-
-then:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -604,8 +549,7 @@ then:
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="collections-as-lists" class="anchor" href="#collections-as-lists"><span class="octicon octicon-link"></span></a>Collections as lists</h1>
@@ -618,46 +562,16 @@ then:
           </div>
 
           <p>
-              TODO - general discussion
+              Extend the representation to include collections, eagerly resolved and showing titles (so can be rendered
+              in a list)
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-            TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Extend the representation to include collections, eagerly resolved and showing titles (so can be rendered in a list)
-
-when
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returns:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -685,12 +599,31 @@ returns:
     }
   }
 }
-
-In the metadata:
-- "$$ro.recentPurchases.resolved" indicates whether the collection has been resolved.
-- "$$ro.recentPurchases.resolveStyle" indicates how the collection was resolved.
-- "$$ro.recentPurchases.dataType" holds the (compile-time) domainType of the referenced resources
 </pre>
+
+          <h3>Discussion</h3>
+          <p>
+              In the metadata:
+          </p>
+          <ul>
+              <li><code>$$ro.recentPurchases.resolved</code> - indicates whether the collection has been resolved.</li>
+              <li><code>$$ro.recentPurchases.resolveStyle</code> - indicates how the collection was resolved</li>
+              <li><code>$$ro.recentPurchases.dataType</code> - holds the (compile-time) domainType of the referenced resources</li>
+          </ul>
+
+<pre>
+</pre>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#collections-as-tables">Collections as Tables</a></li>
+              <li><a href="#lazily-rendered-collections">Lazy resolving of collections</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+              To efficiently implement will require RO v1.2.
+          </p>
 
       </section>
 
@@ -708,46 +641,16 @@ In the metadata:
           </div>
 
           <p>
-              TODO - general discussion
+              Extend the eagerly resolved representation of collections to include other properties of those referenced
+              objects (so can be rendered in a table)
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
           <h3>When:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Extend the eagerly resolved representation to include other properties (so can be rendered in a table)
-
-eg
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returns:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -785,42 +688,13 @@ returns:
     }
   }
 }
-
-Whether a list (previous iteration) or the full table representation (this iteration) is returned is determined by the server.  (A subsequent iteration introduces the ability for the client to influence what is resolved).
-</pre>
-
-      </section>
-
-      
-      
-      <section>
-        <h1>
-<a name="lazy-resolving-of-collections" class="anchor" href="#lazy-resolving-of-collections"><span class="octicon octicon-link"></span></a>Lazy resolving of collections</h1>
-
-          <div class="use-case">
-              <h3>Use case</h3>
-              <p>
-                Accessing a collection (eg to render it) should automatically resolve the collection.
-              </p>
-          </div>
-
-          <p>
-              TODO - general discussion
-          </p>
-
-          <h3>Given:</h3>
-<pre>
-</pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
 </pre>
 
           <h3>Discussion</h3>
           <p>
-              TODO
+              Whether a <a href="#collections-as-lists">list representation</a> or the full table representation is
+              returned is in the first event determined by the server.  However, the client could also
+              <a href="#lazily-rendered-collections">provide hints</a> influencing this behaviour.
           </p>
 
 <pre>
@@ -828,23 +702,44 @@ Whether a list (previous iteration) or the full table representation (this itera
 
           <h3>See also</h3>
           <ul>
-              <li><a href="#TODO">TODO</a></li>
+              <li><a href="#collections-as-lists">Collections as Lists</a></li>
+              <li><a href="#lazily-rendered-collections">Lazy resolving of collections</a></li>
           </ul>
 
           <h3>Implementation Notes</h3>
           <p>
-              TODO
+              To efficiently implement will require RO v1.2.
           </p>
 
+      </section>
+
+      
+      
+      <section>
+        <h1>
+            <a name="lazily-rendered-collections" class="anchor"
+               href="#lazily-rendered-collections">
+                <span class="octicon octicon-link"></span>
+            </a>Lazily rendered collections</h1>
+
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                    Render placeholders for collections that are less likely to be required (not eagerly rendered).
+              </p>
+          </div>
+
+          <p>
+              Rather than eagerly resolving collections, the server might return only a placeholder for the collection;
+              the client could render the collection in a &quot;collapsed&quot; form.
+          </p>
+
+          <h3>When:</h3>
 <pre>
-
-
-By default, returns a placeholder for the collection:
-
-when:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-then:
+</pre>
+          <h3>Then:</h3>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -859,18 +754,73 @@ then:
       ...
     }
 }
+</pre>
 
-Spiro sets up its own watch on the collection (eg {{$scope.recentPurchases.resolveStyle}}) to respond to a resolve request.
+          <h3>Discussion</h3>
+          <p>
+              However, the client must have the capability to request that the collection be resolved 
+              (&quot;expanded&quot;); this is discussed in
+              <a href="#resolve-collection">Resolve Collection</a>.
+          </p>
 
-when:
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#resolve-collection">Resolve Collection</a>.</li>
+          </ul>
+
+      <section>
+      <h1>
+          <a name="resolve-collection" class="anchor" href="#resolve-collection"><span
+                  class="octicon octicon-link"></span></a>Resolve Collection</h1>
+
+          <div class="use-case">
+          <h3>Use case</h3>
+          <p>
+              Resolve collections that were previously lazily rendered.
+          </p>
+      </div>
+
+      <p>
+          For collections that the server has rendered lazily (with a placeholder), a mechanism is required so that
+          the client can request that the collection be resolved.  This is done by Spiro setting up a watch on the
+          appropriate part of the returned representation acting as a flag/toggle, such that it can do the resolve if
+          requested.
+      </p>
+
+      <h3>Given:</h3>
+          <p>A representation of a lazily resolved collection:</p>
+<pre>
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  recentPurchases: null,
+  $$ro: {
+    ...
+    recentPurchases: {
+      ...
+      resolved: false,
+      resolveStyle: null,
+      ...
+    }
+}
+</pre>
+        <p>... with Spiro setting up its own watch on the collection
+            (eg <code>{{$scope.recentPurchases.resolveStyle}}</code>) to respond to a resolve request.</p>
+          <h3>When:</h3>
+<pre>
 card.$$ro.recentPurchases.resolveStyle = "list"
-
-or when:
+</pre>
+          <p>or similarly:</p>
+<pre>
 card.$$ro.recentPurchases.resolveStyle = "table"
+</pre>
 
-then:
-Spiro will then resolve the collection using either of two styles (see previous iterations).  It will also update the representation to include a promise:
-
+      <h3>Then:</h3>
+      <p>Spiro will then resolve the collection using either of two styles, <a href="#collections-as-lists">list</a> or <a href="#collections-as-tables">table</a>.
+          It will also update the representation to include a promise:
+      </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -886,19 +836,30 @@ Spiro will then resolve the collection using either of two styles (see previous 
       ...
     }
 }
+</pre>
 
-the client can then also setup their own additional callbacks on this promise:
-
+      <h3>Discussion</h3>
+      <p>
+          The client can then also setup their own additional callbacks on this promise:
+      </p>
+<pre>
 card.$$ro.recentPurchases.promise.then(function(){ ... })
 </pre>
 
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#lazily-rendered-collections">Lazily rendered collections</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+              <p>As noted above, this feature requires Spiro setting up its own watch on the collection
+              (eg <code>{{$scope.recentPurchases.resolveStyle}}</code>) to respond to a resolve request.</p>
       </section>
 
-      
-      
+
       <section>
         <h1>
-<a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h1>
+            <a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h1>
 
           <div class="use-case">
               <h3>Use case</h3>
@@ -908,48 +869,19 @@ card.$$ro.recentPurchases.promise.then(function(){ ... })
           </div>
 
           <p>
-              TODO - general discussion
+              Whereas <code>$resource</code> requires custom 'actions' to be explicitly mapped, Spiro can
+              automatically map any domain object actions provided by RO as actions on the <code>$spiroResource</code>
+              instance.  Following <code>$resource</code>'s convention, these actions all have a
+              &quot;<code>$</code>&quot; prefix.
           </p>
 
           <h3>Given:</h3>
+          <p>eg, if CreditCard has an 'expireOn(date)' action, then map is basically:</p>
 <pre>
-</pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Whereas $resource requires custom 'actions' to be explicitly mapped, Spiro should automatically map any domain object actions provided by RO as actions on the $spiroResource instance).  Following $resource's convention, these are all invoked with a '$' prefix.
-
-eg, if CreditCard has an 'expireOn(date)' action, then map is basically:
-
-given:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returning:
+</pre>
+          <p>returning:</p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -970,12 +902,14 @@ returning:
     }
   }
 }
-
-when:
+</pre>
+          <h3>When:</h3>
+<pre>
 card.$expireOn({date: "2014-07-15"})
-
-Spiro will first copy the arguments into $$ro:
-
+</pre>
+          <h3>Then:</h3>
+          <p>Spiro will first copy the arguments into <code>$$ro</code>:</p>
+<pre>
 {
   ...
   $$ro: {
@@ -990,11 +924,16 @@ Spiro will first copy the arguments into $$ro:
     }
   }
 }
+</pre>
+        <p>and then immediately execute the action.</p>
 
-and then will submit execute the action.
-
-After the action is invoked, Spiro must automatically refresh the entire object representation because arbitrary properties may have changed.  In essence, this is an "HTTP redirect (to GET) after POST".
-
+          <h3>Discussion</h3>
+          <p>
+              After the action is invoked, Spiro must automatically refresh the entire object representation because
+              arbitrary properties may have changed.  In essence, this is an &quot;HTTP redirect (to GET) after
+              POST&quot;:
+          </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1006,8 +945,7 @@ After the action is invoked, Spiro must automatically refresh the entire object 
 
       </section>
 
-      
-      
+
       <section>
         <h1>
 <a name="action-results" class="anchor" href="#action-results"><span class="octicon octicon-link"></span></a>Action results</h1>
