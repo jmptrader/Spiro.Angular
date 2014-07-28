@@ -14,7 +14,7 @@ Spiro.Angular is written in [TypeScript](http://www.typescriptlang.org/) and com
 
 ##### License
 
-    Copyright 2014 Dan Haywood, Stef Cascarini, Richard Pawson
+    Copyright 2014 Stef Cascarini, Dan Haywood, Richard Pawson
 
     Licensed under the Apache License, Version 2.0 (the
     "License"); you may not use this file except in compliance
