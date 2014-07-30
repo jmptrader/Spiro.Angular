@@ -55,7 +55,7 @@
           <p>Spiro.Angular is a library for accessing a <a href="http://restfulobjects.org">Restful Objects</a> API
               using the <a href="https://angularjs.org/">AngularJS</a> framework.</p>
 
-          <p>The library provides (currently: aims to provide) a <tt>$spiroResource</tt> service that acts as a more
+          <p>The library provides (currently: aims to provide) a <code>$spiroResource</code> service that acts as a more
               functional replacement for AngularJS' own <a
                       href="https://docs.angularjs.org/api/ngResource/service/$resource">$resource</a>. This transforms
               the Restul Objects representations into a simpler format for easier consumption (eg by <a
@@ -950,50 +950,25 @@ card.$expireOn({date: "2014-07-15"})
           </div>
 
           <p>
-              TODO - general discussion
+              Angular's <code>$resource</code>'s actions always return an updated representation of the same object;
+              there is no real HATEOAS support.  RO in contrast hardly ever returns the same representation.
           </p>
-
-          <h3>Given:</h3>
-<pre>
-</pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
           <p>
-              TODO
+              To make <code>$spiroResource</code> have the same &quot;feel&quot; as <code>$resource</code>, it should always return the same representation.  But to enable HATEOAS, the result of the most recent action should be made available under "$$ro" property.  The app can then read it and follow if it wishes.
           </p>
 
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
+          <h3>Given an action that returns a list</h3>
           <p>
-              TODO
+              Assume there is a <code>$findPurchases</code> action to find items that have been purchased using the
+              credit card in a particular timespan
           </p>
-
 <pre>
-
-
-$resource's actions always return an updated representation of the same object; there is no real HATEOAS support.  RO in contrast hardly ever returns the same representation.
-
-To make $spiroResource feel the same as $resource, it should always return the same representation.  But to enable HATEOAS, the result of the most recent action should be made available under "$$ro" property.  The app can then read it and follow if it wishes.
-
-eg assume there is a $findPurchases action to find items that have been purchased using the credit card in a particular timespan
-
-given:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returning:
+</pre>
+          <p>
+            returning:
+          </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1016,11 +991,13 @@ returning:
     }
   }
 }
-
-when:
+</pre>
+          <h3>When:</h3>
+<pre>
 card.$findPurchases({from: "2014-07-01", to: null})
-
-then:
+</pre>
+          <h3>Then:</h3>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1048,20 +1025,22 @@ then:
     }
   }
 }
+</pre>
+          <p>
+              where <code>$$ro.$findPurchases.result</code> holds the result of the action.
+          </p>
 
-where $$ro.$findPurchases.result holds the result of the action.
+          <h3>Given an action that returns an object</h3>
+          <p>
+                eg assume there is a $mostRecentPurchase action to finds the most recently purchased item:
+          </p>
 
-The intention is for the client to either respond immediately to a new value under $$ro.$findPurchases.result, or just ignore it. Therefore, any previously stored at $$ro.$xxx.result will be overwritten.
-
-~~
-If the action returns a single object, then it will hold this instead.
-
-eg assume there is a $mostRecentPurchase action to finds the most recently purchased item:
-
-when:
+        <h3>When:</h3>
+<pre>
 card.$mostRecentPurchase()
-
-then:
+</pre>
+        <h3>Then:</h3>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1071,23 +1050,30 @@ then:
     ...
     $mostRecentPurchase: {
       ...
-      result: { 
+      result: {
         $href: "http://localhost:8080/rest/objects/purchase/123456701",
         $title: "Beverages from Starbuck, $4.95"
       }
     }
   }
 }
+</pre>
+        <p>
+            So, if the action returns a single object, then the <code>$$ro.$findPurchases.result</code> holds a
+            representation of that object.
+          </p>
 
-~~
-If the action returns a single scalar value, then it will hold this instead.
 
-eg assume there is a $countPurchases action to count the number of purchased items in a date range:
-
-when:
+        <h3>Given an action that returns a scalar</h3>
+        <p>
+            eg assume there is a <code>$countPurchases</code> action to count the number of purchased items in a date range:
+        </p>
+        <h3>When:</h3>
+<pre>
 card.$countPurchases()
-
-then:
+</pre>
+        <h3>Then:</h3>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1101,16 +1087,21 @@ then:
     }
   }
 }
+</pre>
 
-~~
-If the action returns void, then the 'result' property is removed (if present).
-
-eg the $expireOn action
-
-when:
+        <h3>Given an action that returns void:</h3>
+        <p>
+            eg the <code>$expireOn</code> action
+        </p>
+        <h3>When:</h3>
+<pre>
 card.$expireOn({date: "2014-07-15"})
-
-then:
+</pre>
+        <h3>Then:</h3>
+        <p>
+            The <code>result</code> property is removed (if present).
+        </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1125,9 +1116,15 @@ then:
 }
 </pre>
 
+        <h3>Discussion</h3>
+          <p>
+              The intention is for the client to either respond immediately to a new value under
+              <code>$$ro.$findPurchases.result</code>, or just ignore it. Anything previously stored at
+              <code>$$ro.$xxx.result</code> will be overwritten.
+          </p>
+
       </section>
 
-      
       
       <section>
         <h1>
@@ -1141,58 +1138,44 @@ then:
           </div>
 
           <p>
-            TODO - general discussion
+              Whereas <code>$resource</code> requires an explicit call to <code>$save</code> method, with Spiro we
+              can automatically update properties through a directive, <code>spiro-update</code>.
           </p>
 
-          <h3>Given:</h3>
-<pre>
-</pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
+          <h3>Directive on a single property:</h3>
           <p>
-              TODO
+              In the simple case this directive could be applied to the input field for a single property:
           </p>
-
 <pre>
+&lt;input ng-model=&quot;name&quot; spiro-update&gt;${name}&lt;/input&gt;
+</pre>
+          <h3>Directive for a number of properties in a form:</h3>
+          <p>
+              This directive could also be inherited from a parent div or form:
+          </p>
+<pre>
+&lt;div spiro-update&gt;
+  &lt;input ng-model=&quot;name&quot;&gt;${name}&lt;/input&gt;
+  &lt;input ng-model=&quot;address&quot;&gt;${address}&lt;/input&gt;
+&lt;/div&gt;
 </pre>
 
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
 
           <h3>Implementation Notes</h3>
           <p>
-              TODO
+              In both cases the directive would watch for changes to the scope <code>{{$scope.name}}</code> using the
+              <code>$scope.$watch</code> API.  If notified of a change then Spiro will automatically post the change
+              to the corresponding RO resource.
           </p>
 
-<pre>
+          <p>
+              A slight issue here is that if the property that <a href="#property-choices-conditional">has</a>
+              <a href="#property-auto-complete-conditional">dependents</a> on it, then the current value of those
+              dependents may change.  Updating those dependent properties is a server-side responsibility, but Spiro
+              will automatically refresh the entire object representation whenever a property is updated to ensure it
+              is sync.  In essence, this is an "HTTP redirect (to GET) after POST"
+          </p>
 
-
-Whereas $resource does not automatically provide any sort of 'update' (only CRD of CRUD), with Spiro we can automatically update properties by binding to the scope.
-
-A Spiro-provided directive "spiro-update" controls whether this occurs automatically:
-
-<input ng-model="name" spiro-update>${name}</input>
-
-adds a watch to the {{$scope.name}} (using $scope.$watch API).  If changed then Spiro will automatically post the change to the corresponding RO resource.
-
-This directive could also be inherited from a parent div or form:
-
-eg:
-<div spiro-update>
-  <input ng-model="name">${name}</input>
-  <input ng-model="address">${address}</input>
-</div>
-
-A slight issue here is that if the property that has dependents on it (as addressed in iteration #21), then the current value of those dependents may change.  Updating those dependent properties is a server-side responsibility, but Spiro will automatically refresh the entire object representation whenever a property is updated to ensure it is sync.  In essence, this is an "HTTP redirect (to GET) after POST"
-</pre>
 
       </section>
 
@@ -1331,7 +1314,7 @@ As for actions, the intention is for the client to either respond immediately to
 <pre>
 
 
-Similar to the way that $resource allows custom actions to be defined, so does $spiroResource.  One difference is that whereas $resource actions are either 'instance' actions or 'class' actions, $spiroResource actions only correspond to 'class' actions, typically (always?) corresponding to service actions:
+Similar to the way that <code>$resource</code> allows custom actions to be defined, so does <code>$spiroResource</code>.  One difference is that whereas <code>$resource</code> actions are either 'instance' actions or 'class' actions, <code>$spiroResource</code> actions only correspond to 'class' actions, typically (always?) corresponding to service actions:
 
 when:
 var CreditCard = $spiroResource(
@@ -2632,7 +2615,7 @@ entering an argument for subcategory parameter now populates the choices for tho
           <div class="use-case">
               <h3>Use case</h3>
               <p>
-                Allow objects to be deleted using an API similar to that surfaced by $resource.
+                Allow objects to be deleted using an API similar to that surfaced by <code>$resource</code>.
               </p>
           </div>
 
@@ -2671,7 +2654,7 @@ entering an argument for subcategory parameter now populates the choices for tho
 <pre>
 
 
-$resource provides delete() / remove() as "standard" actions; these perform an HTTP DELETE against the URL.  $spiroResource provide something very similar.
+<code>$resource</code> provides delete() / remove() as "standard" actions; these perform an HTTP DELETE against the URL.  <code>$spiroResource</code> provide something very similar.
 
 given
 var cc = CreditCard.get({instanceId: 123})
@@ -2680,7 +2663,7 @@ when:
 cc.$delete()
 
 then:
-??? what are the post-conditions for $$resource ??
+??? what are the post-conditions for $<code>$resource</code> ??
 </pre>
 
       </section>
@@ -2694,7 +2677,7 @@ then:
           <div class="use-case">
               <h3>Use case</h3>
               <p>
-                Allow objects to be created using an API similar to that surfaced by $resource.
+                Allow objects to be created using an API similar to that surfaced by <code>$resource</code>.
               </p>
           </div>
 
@@ -2733,7 +2716,7 @@ then:
 <pre>
 
 
-$resource provides save() as a standard action; this performs an HTTP POST against the URL.  $spiroResource provides something very similar.
+<code>$resource</code> provides save() as a standard action; this performs an HTTP POST against the URL.  <code>$spiroResource</code> provides something very similar.
 
 given:
 var newCard = new CreditCard({number:'1234-5678-9090-1212', name: "John Doe"});
