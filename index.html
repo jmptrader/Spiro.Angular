@@ -1451,8 +1451,9 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 }
 </pre>
           <p>
-              and so the application programmer can also set up an appropriate watch expression on
-              <code>{{scope.$$ro.name.invalid}}</code>, for example using a custom directive:
+              The application programmer can set up an appropriate watch expression on
+              <code>{{scope.$$ro.name.invalid}}</code> to detect and render any validation errors.  One way to do this
+              is using a custom directive:
           </p>
 <pre>
 app.directive('spiroPropertyValidate', function() {
@@ -1475,7 +1476,10 @@ app.directive('spiroPropertyValidate', function() {
     &lt;input type=&quot;text&quot;
            ng-model=&quot;cardHolder&quot; name=&quot;cardHolder&quot;
            spiro-property-validate /&gt;
-    &lt;span style=&quot;color:red&quot; ng-show=&quot;myForm.cardHolder.$error.spiroPropertyValidate&quot;&gt;$$ro.cardHolder.invalidReason&lt;/span&gt;
+    &lt;span style=&quot;color:red&quot;
+          ng-show=&quot;myForm.cardHolder.$error.spiroPropertyValidate&quot;&gt;
+        $$ro.cardHolder.invalidReason
+    &lt;/span&gt;
     &lt;button type=&quot;submit&quot; ng-disabled=&quot;myForm.$invalid&quot;&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
@@ -1494,7 +1498,8 @@ card.name="Mike_Smith!"
     cardHolder: {
       ...
       invalid: true,
-      invalidReason: "Name can contain only alphabetic characters, space or hyphen '-'."
+      invalidReason:
+           "Name can contain only alphabetic characters, space or hyphen '-'."
     }
     $$href: ...,
     $$title: ...
@@ -1582,7 +1587,8 @@ app.directive('spiroActionValidate', function() {
         link: function(scope, elem, attr, ctrl) {
             angular.forEach(elem.children(), function(inputEl) {
                 // eg: $$ro.$expireOn.parameters.date.invalid
-                var watch = '$$ro' + ctrl.name + '.parameters.' + elem.attrs[name] + '.invalid';
+                var watch = '$$ro' + ctrl.name + '.parameters.' +
+                            elem.attrs[name] + '.invalid';
                 scope.$watch(watch, function(value) {}
                     ctrl.$setValidity('spiroActionValidate', value);
                 });
@@ -1595,9 +1601,13 @@ app.directive('spiroActionValidate', function() {
               and corresponding markup (nb: this is a code sketch):
           </p>
 <pre>
-&lt;form name=&quot;$expireOn&quot; ng-model=&quot;$expireOn&quot; spiro-action-validate ng-submit=&quot;executeExpireOn()&quot;&gt;
+&lt;form name=&quot;$expireOn&quot; ng-model=&quot;$expireOn&quot;
+         spiro-action-validate ng-submit=&quot;executeExpireOn()&quot;&gt;
     &lt;input type=&quot;text&quot; name=&quot;date&quot; /&gt;
-    &lt;span style=&quot;color:red&quot; ng-show=&quot;$expireOn.date.$error.spiroActionValidate&quot;&gt;$$ro.$expireOn.parameters.date.invalidReason&lt;/span&gt;
+    &lt;span style=&quot;color:red&quot;
+          ng-show=&quot;$expireOn.date.$error.spiroActionValidate&quot;&gt;
+        $$ro.$expireOn.parameters.date.invalidReason
+    &lt;/span&gt;
     &lt;button type=&quot;submit&quot; ng-disabled=&quot;$expireOn.$invalid&quot;&gt;Submit&lt;/button&gt;
 &lt;/form&gt;
 </pre>
@@ -1675,7 +1685,7 @@ scope.$$ro.$expireOn.parameters.date.argument="2013-01-01"
 
           <p>
               UP TO HERE for REFORMATTING ETC.
-              
+
               TODO - general discussion
           </p>
 
