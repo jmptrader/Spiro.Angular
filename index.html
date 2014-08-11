@@ -168,7 +168,6 @@ newCard.$save();
 
       </section>
 
-
       <section>
           <h1>
               <a name="approach" class="anchor" href="#approach"><span class="octicon octicon-link"></span></a>Approach
@@ -191,7 +190,6 @@ newCard.$save();
 
 
       </section>
-
 
       <section>
         <h1>
@@ -253,7 +251,6 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
       </section>
 
-
       <section>
         <h1>
 <a name="ro-access" class="anchor" href="#ro-access"><span class="octicon octicon-link"></span></a>$$ro access</h1>
@@ -308,7 +305,6 @@ card.$$ro.$$title
           -->
 
       </section>
-
 
       <section>
         <h1>
@@ -368,7 +364,6 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
             -->
 
       </section>
-
 
       <section>
         <h1>
@@ -451,7 +446,6 @@ $$scope.$$ro.$$promise.then(function() { ... })
 
       </section>
 
-
       <section>
         <h1>
 <a name="reference-properties" class="anchor" href="#reference-properties"><span class="octicon octicon-link"></span></a>Reference Properties</h1>
@@ -512,7 +506,6 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
       </section>
 
-
       <section>
         <h1>
 <a name="hateoas-support" class="anchor" href="#hateoas-support"><span class="octicon octicon-link"></span></a>HATEOAS Support</h1>
@@ -545,7 +538,6 @@ var card = CreditCard.getUrl(
 </pre>
 
       </section>
-
 
       <section>
         <h1>
@@ -621,8 +613,6 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="collections-as-tables" class="anchor" href="#collections-as-tables"><span class="octicon octicon-link"></span></a>Collections as tables</h1>
@@ -704,8 +694,6 @@ var card = CreditCard.get({num: "1234-5678-9012-3456"})
 
       </section>
 
-      
-      
       <section>
         <h1>
             <a name="lazily-rendered-collections" class="anchor"
@@ -848,7 +836,6 @@ card.$$ro.recentPurchases.promise.then(function(){ ... })
               (eg <code>{{$scope.recentPurchases.resolveStyle}}</code>) to respond to a resolve request.</p>
       </section>
 
-
       <section>
         <h1>
             <a name="actions" class="anchor" href="#actions"><span class="octicon octicon-link"></span></a>Actions</h1>
@@ -868,7 +855,7 @@ card.$$ro.recentPurchases.promise.then(function(){ ... })
           </p>
 
           <h3>Given:</h3>
-          <p>eg, if CreditCard has an 'expireOn(date)' action, then map is basically:</p>
+          <p>eg, if CreditCard has an <code>expireOn(date)</code> action, then the map is basically:</p>
 <pre>
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
@@ -936,7 +923,6 @@ card.$expireOn({date: "2014-07-15"})
 </pre>
 
       </section>
-
 
       <section>
         <h1>
@@ -1125,7 +1111,6 @@ card.$expireOn({date: "2014-07-15"})
 
       </section>
 
-      
       <section>
         <h1>
 <a name="automatically-updated-properties" class="anchor" href="#automatically-updated-properties"><span class="octicon octicon-link"></span></a>Automatically updated properties</h1>
@@ -1160,7 +1145,6 @@ card.$expireOn({date: "2014-07-15"})
 &lt;/div&gt;
 </pre>
 
-
           <h3>Implementation Notes</h3>
           <p>
               In both cases the directive would watch for changes to the scope <code>{{$scope.name}}</code> using the
@@ -1176,11 +1160,8 @@ card.$expireOn({date: "2014-07-15"})
               is sync.  In essence, this is an "HTTP redirect (to GET) after POST"
           </p>
 
-
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="updating-view-models" class="anchor" href="#updating-view-models"><span class="octicon octicon-link"></span></a>Updating view models</h1>
@@ -1193,57 +1174,34 @@ card.$expireOn({date: "2014-07-15"})
           </div>
 
           <p>
-              TODO - general discussion
+              Normally updating a property will mutate that object and return a representation of that object; but in
+              theory (and in Isis' view model implementation) the target object could be immutable and instead return
+              the URL of a new modified target object in its stead.  Thus, invoking a property modification could
+              result in a new resource to fetch.  This is captured in <code>$$ro.property.result</code>, same as
+              for actions.
           </p>
 
           <h3>Given:</h3>
 <pre>
-</pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Normally updating a property will mutate that object and return a representation of that object; but in theory (and in Isis' view model implementation) the target object could be immutable and instead return the URL of a new modified target object in its stead.  Thus, invoking a property modification could result in a new resource to fetch.  This can be captured in $$ro.property.result, same as for actions.
-
-given:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returning:
+</pre>
+          <p>
+          returning:
+          </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
   ...
   $$ro: { ... }
 }
-
-when:
+</pre>
+          <h3>When:</h3>
+<pre>
 card.name = "Joe Smith"
-
-now returns:
+</pre>
+          <h3>Then:</h3>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Joe Smith",
@@ -1258,16 +1216,33 @@ now returns:
     }
   }
 }
-
-In this particular example the object itself has been mutated - probably the backing object is an entity.  However, it might not in general; the $$ro.name.result.$$href does not necessarily always equal $$ro.$$href.
-
-As for actions, the intention is for the client to either respond immediately to a new value under $$ro.xxx.result.$$href, or ignore it. Therefore, any previously stored will be overwritten.
 </pre>
+
+          <h3>Discussion</h3>
+          <p>
+              In this particular example the object itself has been mutated - probably the backing object is an entity.
+              However, it might not in general; the <code>$$ro.name.result.$$href</code> does not necessarily always
+              equal <code>$$ro.$$href</code>.
+          </p>
+          <p>
+              As for actions, the intention is for the client to either respond immediately to a new value under
+              <code>$$ro.xxx.result.$$href</code>, or ignore it. Therefore, any previously stored will be overwritten.
+          </p>
+
+          <!--
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#TODO">TODO</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+              TODO
+          </p>
+          -->
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="custom-finders" class="anchor" href="#custom-finders"><span class="octicon octicon-link"></span></a>Custom finders</h1>
@@ -1280,43 +1255,29 @@ As for actions, the intention is for the client to either respond immediately to
           </div>
 
           <p>
-              TODO - general discussion
+              Similar to the way that <code>$resource</code> allows custom actions to be defined, so does
+              <code>$spiroResource</code>.
+          </p>
+          <p>
+              One difference is that whereas <code>$resource</code> actions are either Javascript
+              &apos;instance&apos; methods or &apos;class&apos; methods, with Spiro the instance actions of the
+              domain object are automatically surfaced.  Therefore <code>$spiroResource</code>'s custom actions
+              are intended only to &quot;attach&quot; relevant finder or factory actions of domain services, and these
+              always mapped as &apos;class&apos; actions.  For example, if a domain entity <code>Customer</code> has
+              a corresponding domain service <code>Customers</code>, then the service's <code>findById()</code> and
+              <code>newCustomer</code> can be mapped as class actions on the Javascript <code>Customer</code> resource.
           </p>
 
           <h3>Given:</h3>
-<pre>
-</pre>
+          <p>
+              a domain service <code>CreditCards</code> with actions <code>findByName()</code> and
+              <code>findExpired()</code>
+          </p>
           <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
           <p>
-              TODO
+              the Javascript <code>CreditCard</code> is defined:
           </p>
-
 <pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Similar to the way that <code>$resource</code> allows custom actions to be defined, so does <code>$spiroResource</code>.  One difference is that whereas <code>$resource</code> actions are either 'instance' actions or 'class' actions, <code>$spiroResource</code> actions only correspond to 'class' actions, typically (always?) corresponding to service actions:
-
-when:
 var CreditCard = $spiroResource(
                      "/objects/creditCard/:instanceId",
                      {instanceId:'@num'},
@@ -1324,46 +1285,17 @@ var CreditCard = $spiroResource(
                        findByName: "/services/creditCards/action/findByName/invoke",
                        findExpired: "/services/creditCards/action/findExpired/invoke",
                      });
-
-then:
-var cards = CreditCard.findByName({name: "Jones"})
-</pre>
-
-      </section>
-
-      
-      
-      <section>
-        <h1>
-<a name="disabled-members" class="anchor" href="#disabled-members"><span class="octicon octicon-link"></span></a>Disabled members</h1>
-
-          <div class="use-case">
-              <h3>Use case</h3>
-              <p>
-                Some members may become disabled or enabled, and so we need a way to expose this fact easily so that the UI can reflect the fact.
-              </p>
-          </div>
-
-          <p>
-              TODO - general discussion
-          </p>
-
-          <h3>Given:</h3>
-<pre>
-</pre>
-          <h3>When:</h3>
-<pre>
 </pre>
           <h3>Then:</h3>
 <pre>
+var cards = CreditCard.findByName({name: "Jones"})
 </pre>
 
+          <!--
           <h3>Discussion</h3>
           <p>
               TODO
           </p>
-<pre>
-</pre>
 
           <h3>See also</h3>
           <ul>
@@ -1374,16 +1306,34 @@ var cards = CreditCard.findByName({name: "Jones"})
           <p>
               TODO
           </p>
+          -->
+      </section>
 
+      <section>
+        <h1>
+<a name="disabled-members" class="anchor" href="#disabled-members"><span class="octicon octicon-link"></span></a>Disabled members</h1>
+
+          <div class="use-case">
+              <h3>Use case</h3>
+              <p>
+                Some members may become disabled or enabled, and so we need a way to expose this fact easily so that
+                the UI can reflect the fact.
+              </p>
+          </div>
+
+          <p>
+              Rather than have Spiro attempt to manipulate the DOM, we expose the information under <code>$$ro</code>.
+              The UI component can then set up a watch expression on its scope.
+          </p>
+
+          <h3>Given:</h3>
 <pre>
-
-
-Rather than have Spiro attempt to manipulate the DOM, we expose the information under $$ro.  The UI component can then set up a watch expression on its scope.
-
-given:
 var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returning:
+</pre>
+          <p>
+              returning:
+          </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1424,20 +1374,44 @@ returning:
     ...
   }
 }
-
-Can then set up a watch expression, eg:
-
-<input ng-model="name" disabled="{{scope.$$ro.name.disabled}}">{{name}}</input>
-
-or more simply:
-
-<input ng-model="name" ng-disabled="$$ro.name.disabled">{{name}}</input>
 </pre>
 
+          <h3>When:</h3>
+          <p>
+          Set up a watch expression, eg:
+          </p>
+<pre>
+&lt;input ng-model=&quot;name&quot; disabled=&quot;{{scope.$$ro.name.disabled}}&quot;&gt;{{name}}&lt;/input&gt;
+</pre>
+
+          <p>
+          or more simply:
+          </p>
+<pre>
+&lt;input ng-model=&quot;name&quot; ng-disabled=&quot;$$ro.name.disabled&quot;&gt;{{name}}&lt;/input&gt;
+</pre>
+
+          <h3>Then:</h3>
+          <p>
+              the input field will be disabled whenever the representation indicates that the property is also disabled.
+          </p>
+
+          <!--
+          <h3>Discussion</h3>
+          <p>
+          </p>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#TODO">TODO</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+          -->
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="invalid-properties" class="anchor" href="#invalid-properties"><span class="octicon octicon-link"></span></a>Invalid properties</h1>
@@ -1450,52 +1424,74 @@ or more simply:
           </div>
 
           <p>
-              TODO - general discussion
+              As for <a href="#disabled-members">disabling properties</a>, a watch expression under <code>$$ro</code> can also be used to validate
+              changes to properties.
           </p>
 
           <h3>Given:</h3>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
-          <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
           <p>
-              TODO
+              returning:
           </p>
 <pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Again, use a watch expression under $$ro.
-
-when:
-card.name="Mike_Smith!"
-
-then:
 {
   num: "1234-5678-9012-3456",
-  name: "Mike Smith",
+  cardHolder: "Mike Smith",
   ...
   $$ro: {
     ...
     name: {
+      ...
+      disabled: false
+    },
+    ...
+  }
+}
+</pre>
+          <p>
+              and also have set up an appropriate watch expression on <code>{{scope.$$ro.name.invalid}}</code>, for
+              example using a custom directive:
+          </p>
+<pre>
+app.directive('spiroValidate', function() {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, elem, attr, ctrl) {
+            scope.$watch('$$ro' + ctrl.name + '.invalid', function(value) {}
+                ctrl.$setValidity('spiroValidate', value);
+            });
+        }
+    };
+});
+</pre>
+            <p>
+                with corresponding markup:
+            </p>
+<pre>
+&lt;form name=&quot;myForm&quot; ng-submit=&quot;doSomething()&quot;&gt;
+    &lt;input type=&quot;text&quot;
+           ng-model=&quot;cardHolder&quot; name=&quot;cardHolder&quot;
+           spiro-validate /&gt;
+    &lt;span style=&quot;color:red&quot; ng-show=&quot;myForm.cardHolder.$error.spiroValidate&quot;&gt;$$ro.cardHolder.invalidReason&lt;/span&gt;
+    &lt;button type=&quot;submit&quot; ng-disabled=&quot;myForm.$invalid&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+          <h3>When:</h3>
+<pre>
+card.name="Mike_Smith!"
+</pre>
+          <h3>Then:</h3>
+<pre>
+{
+  num: "1234-5678-9012-3456",
+  cardHolder: "Mike Smith",
+  ...
+  $$ro: {
+    ...
+    cardHolder: {
       ...
       invalid: true,
       invalidReason: "Name can contain only alphabetic characters, space or hyphen '-'."
@@ -1504,14 +1500,28 @@ then:
     $$title: ...
   }
 }
-
-then set up a watch expression on {{scope.$$ro.name.invalid}}.
 </pre>
+          <h3>Discussion</h3>
+          <p>
+              The directive shown above is only responsible for watching the changes that Spiro makes under <code>$$ro</code>
+              and reflecting them back into the UI.  In addition, Spiro will also have set its own watch on the original
+              value (<code>scope.cardHolder</code>) in order to make an HTTP call to the corresponding RO resource
+              when the value changes; see <a href="#automatically-updated-properties">here</a>.
+          </p>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#automatically-updated-properties">Automatically updated properties</a></li>
+          </ul>
+
+          <!--
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+          -->
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="invalid-action-parameter" class="anchor" href="#invalid-action-parameter"><span class="octicon octicon-link"></span></a>Invalid action parameter</h1>
@@ -1524,7 +1534,7 @@ then set up a watch expression on {{scope.$$ro.name.invalid}}.
           </div>
 
           <p>
-              TODO - general discussion
+              UP TO HERE FOR REFORMATTING/TIDYING UP...
           </p>
 
           <h3>Given:</h3>
@@ -1590,8 +1600,6 @@ In addition, the $$ro.$expireOn.invalid is a convenience that allows a watch exp
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="invalid-action-parameters" class="anchor" href="#invalid-action-parameters"><span class="octicon octicon-link"></span></a>Invalid action parameters</h1>
@@ -1664,8 +1672,6 @@ then set up a watch expression on {{scope.$$ro.$expireOn.invalid}}.  Unlike the 
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="property-choices" class="anchor" href="#property-choices"><span class="octicon octicon-link"></span></a>Property choices</h1>
@@ -1760,8 +1766,6 @@ returns:
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="property-auto-complete" class="anchor" href="#property-auto-complete"><span class="octicon octicon-link"></span></a>Property auto-complete</h1>
@@ -1871,8 +1875,6 @@ then:
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="property-choices-conditional" class="anchor" href="#property-choices-conditional"><span class="octicon octicon-link"></span></a>Property choices (conditional)</h1>
@@ -1972,8 +1974,6 @@ Note that the subcategory property also changes as well as the list of choices f
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="property-auto-complete-conditional" class="anchor" href="#property-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Property auto-complete (conditional)</h1>
@@ -2024,8 +2024,6 @@ The API is the same as unconditional auto-complete (iteration #20, above) except
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="action-param-defaults" class="anchor" href="#action-param-defaults"><span class="octicon octicon-link"></span></a>Action param defaults</h1>
@@ -2135,8 +2133,6 @@ causes Spiro to request and populate the default argument for each of the parame
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="action-param-choices" class="anchor" href="#action-param-choices"><span class="octicon octicon-link"></span></a>Action param choices</h1>
@@ -2247,8 +2243,6 @@ If there are defaults (iteration #23) then these will also become available.
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="action-param-auto-complete" class="anchor" href="#action-param-auto-complete"><span class="octicon octicon-link"></span></a>Action param auto-complete</h1>
@@ -2363,8 +2357,6 @@ Setting the value for any argument will implicitly set "prompt" to true, and so 
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="action-param-choices-conditional" class="anchor" href="#action-param-choices-conditional"><span class="octicon octicon-link"></span></a>Action param choices (conditional)</h1>
@@ -2484,8 +2476,6 @@ implicitly sets up the prompt, computes the choices for category parameter, and 
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="action-param-auto-complete-conditional" class="anchor" href="#action-param-auto-complete-conditional"><span class="octicon octicon-link"></span></a>Action param auto-complete (conditional)</h1>
@@ -2606,8 +2596,6 @@ entering an argument for subcategory parameter now populates the choices for tho
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="delete" class="anchor" href="#delete"><span class="octicon octicon-link"></span></a>delete()</h1>
@@ -2668,8 +2656,6 @@ then:
 
       </section>
 
-      
-      
       <section>
         <h1>
 <a name="save" class="anchor" href="#save"><span class="octicon octicon-link"></span></a>save()</h1>
@@ -2736,7 +2722,6 @@ and HTTP status code 201
 
       </section>
       
-      
       <section>
         <h1>
 <a name="further-ideas" class="anchor" href="#further-ideas"><span class="octicon octicon-link"></span></a>Further ideas...</h1>
@@ -2751,10 +2736,6 @@ and HTTP status code 201
 </pre>
 
       </section>
-
-
-
-
 
       <section>
           <h1>
@@ -2821,8 +2802,6 @@ and HTTP status code 201
 </pre>
 
       </section>
-
-
 
       <footer>
       <!--
