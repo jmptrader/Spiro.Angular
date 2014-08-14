@@ -1570,7 +1570,6 @@ card.$expireOn({date: "2013-01-01"})
   }
 }
 </pre>
-
           <p>
               then Spiro also sets up its own watch on each of the parameter arguments, eg <code>$$ro.$expireOn.parameters.date.argument</code>.
               If changed, then a corresponding RO resource is called to validate.
@@ -1663,6 +1662,7 @@ scope.$$ro.$expireOn.parameters.date.argument="2013-01-01"
           <h3>See also</h3>
           <ul>
               <li><a href="#invalid-properties">invalid properties</a></li>
+              <li><a href="#invalid-action-parameters">invalid action parameters</a></li>
           </ul>
 
           <!--
@@ -1684,47 +1684,49 @@ scope.$$ro.$expireOn.parameters.date.argument="2013-01-01"
           </div>
 
           <p>
-              UP TO HERE for REFORMATTING ETC.
-
-              TODO - general discussion
+              As for <a href="#invalid-action-parameter">validation of an individual action parameter</a>, validation
+              of a set of action parameters is performed by Spiro setting up a watch on the proposed arguments, and
+              optionally for the programmer to set up a watch (under <code>$$ro</code>) for any validation errors.
           </p>
 
           <h3>Given:</h3>
 <pre>
+card.$findPurchases({from: "2014-07-01", to: "2014-06-01"})
 </pre>
+          <p>
+              returning:
+          </p>
+<pre>
+{
+  num: "1234-5678-9012-3456",
+  name: "Mike Smith",
+  ...
+  $findPurchases: ...,
+  ...
+  $$ro: {
+    ...
+    $findPurchases: {
+      parameters: { ... }
+    }
+  }
+}
+</pre>
+          <p>
+              then Spiro also sets up its own watch uses the watch on each of the parameter arguments, (as discussed
+              in <a href="#invalid-action-parameter">action parameter validation</a>) to also call the RO resource
+              to validate the set of parameters.
+          </p>
           <h3>When:</h3>
+          <p>
+              the proposed argument is changed:
+          </p>
+<pre>
+scope.$$ro.$expireOn.parameters.date.argument="2013-01-01"
+</pre>
 <pre>
 </pre>
           <h3>Then:</h3>
 <pre>
-</pre>
-
-          <h3>Discussion</h3>
-          <p>
-              TODO
-          </p>
-<pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Again, approach is to use a watch expression under $$ro.
-
-eg:
-card.$findPurchases({from: "2014-07-01", to: "2014-06-01"})
-
-returns:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1740,10 +1742,26 @@ returns:
     }
   }
 }
-
-then set up a watch expression on {{scope.$$ro.$expireOn.invalid}}.  Unlike the previous use case, here it is the combination of arguments that are invalid, so the 'invalidReason' is at the same level as the 'invalid' property.
 </pre>
 
+          <h3>Discussion</h3>
+          <p>
+              Unlike the previous use case, here it is the combination of arguments that are invalid, so the
+              <code>invalidReason</code> is for the action (under <code>$$ro.$findPurchases</code>) rather than any
+              individual action parameter.
+          </p>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#invalid-action-parameter">invalid action parameter</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+              Spiro actually just makes a single RO call to validate both individual action
+              parameter and multiple action parameters.  The difference between the two use cases is for the application
+              programmer, who must set up a watch both for the parameters and for the action as a whole.
+          </p>
       </section>
 
       <section>
@@ -1758,47 +1776,21 @@ then set up a watch expression on {{scope.$$ro.$expireOn.invalid}}.  Unlike the 
           </div>
 
           <p>
-              TODO - general discussion
+              The list of choices for a given property are available under <code>$$ro</code>.
           </p>
 
           <h3>Given:</h3>
+          <p>
+              Suppose <code>issuedBy</code> is a simple value property:
+          </p>
 <pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
 </pre>
           <h3>When:</h3>
-<pre>
-</pre>
-          <h3>Then:</h3>
-<pre>
-</pre>
-
-          <h3>Discussion</h3>
           <p>
-              TODO
+              returning:
           </p>
 <pre>
-</pre>
-
-          <h3>See also</h3>
-          <ul>
-              <li><a href="#TODO">TODO</a></li>
-          </ul>
-
-          <h3>Implementation Notes</h3>
-          <p>
-              TODO
-          </p>
-
-<pre>
-
-
-Expose the choices under $$ro property.
-
-Suppose 'issuedBy' is a simple value property,
-
-eg:
-var card = CreditCard.get({num: "1234-5678-9012-3456"})
-
-returns:
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1812,11 +1804,26 @@ returns:
     }
   }
 }
+</pre>
+          <h3>Then:</h3>
+          <p>
+              The programmer can use any of the choices listed as a value when
+              <a href="#automatically-updated-properties">changing the property</a>.
+          </p>
 
-~~
-Suppose instead 'issuedBy' is a reference property, then:
 
-returns:
+          <h3>Given:</h3>
+          <p>
+              Suppose instead <code>issuedBy</code> is a reference property:
+          </p>
+<pre>
+var card = CreditCard.get({num: "1234-5678-9012-3456"})
+</pre>
+          <h3>When:</h3>
+          <p>
+              returning:
+          </p>
+<pre>
 {
   num: "1234-5678-9012-3456",
   name: "Mike Smith",
@@ -1825,11 +1832,11 @@ returns:
   $$ro: {
     ...
     issuedBy: {
-      choices: [ 
+      choices: [
         { $href: "http://localhost:8080/rest/objects/issuer/visa",
-          $title: "Visa" }, 
+          $title: "Visa" },
         { $href: "http://localhost:8080/rest/objects/issuer/mastercard",
-          $title: "Mastercard" }, 
+          $title: "Mastercard" },
         { $href: "http://localhost:8080/rest/objects/issuer/amex",
           $title: "Amex" },
       ]
@@ -1837,6 +1844,32 @@ returns:
   }
 }
 </pre>
+          <h3>Then:</h3>
+          <p>
+              Again, the programmer can use any of the choices listed.
+          </p>
+
+          <h3>Discussion</h3>
+          <p>
+              In the second example, note the availability of <code>$title</code> to render the link to the choice.
+          </p>
+
+          <!--
+          <h3>Discussion</h3>
+          <p>
+          </p>
+
+          <h3>See also</h3>
+          <ul>
+              <li><a href="#TODO">TODO</a></li>
+          </ul>
+
+          <h3>Implementation Notes</h3>
+          <p>
+          </p>
+          -->
+
+<pre>
 
       </section>
 
@@ -1852,6 +1885,8 @@ returns:
           </div>
 
           <p>
+              UP TO HERE...
+
               TODO - general discussion
           </p>
 
