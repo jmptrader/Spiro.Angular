@@ -50,13 +50,11 @@ var Spiro;
                     data: getData(model)
                 };
                 $rootScope.$broadcast("ajax-change", ++repLoader.loadingCount);
-                $http(config).
-                    success(function (data, status, headers, config) {
+                $http(config).success(function (data, status, headers, config) {
                     response.attributes = data; // TODO make typed 
                     delay.resolve(response);
                     $rootScope.$broadcast("ajax-change", --repLoader.loadingCount);
-                }).
-                    error(function (data, status, headers, config) {
+                }).error(function (data, status, headers, config) {
                     if (status === 500) {
                         var error = new Spiro.ErrorRepresentation(data);
                         delay.reject(error);
