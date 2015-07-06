@@ -35,6 +35,8 @@
     <Content Include="Scripts\jasmine\console.js" />
     <Content Include="Scripts\jasmine\jasmine-html.js" />
     <Content Include="Scripts\jasmine\jasmine.js" />
+    <Content Include="Scripts\lodash.js" />
+    <Content Include="Scripts\lodash.min.js" />
     <Content Include="Scripts\spiro.angular.services.transformstrategy.js" />
     <Content Include="Scripts\spiro.angular.services.loaderwithtransform.js" />
     <Content Include="Scripts\spiro.angular.services.color.js" />
@@ -45,8 +47,6 @@
     <Content Include="Scripts\spiro.models.js" />
     <Content Include="Scripts\spiro.models.shims.js" />
     <Content Include="Scripts\spiro.placeholder.app.js" />
-    <Content Include="Scripts\underscore.js" />
-    <Content Include="Scripts\underscore.min.js" />
     <Content Include="SpiroReadMe.txt" />
     <TypeScriptCompile Include="Scripts\spiro.config.ts" />
     <TypeScriptCompile Include="Scripts\spiro.models.helpers.ts" />
@@ -62,7 +62,7 @@
     <TypeScriptCompile Include="Scripts\typings\angularjs\angular.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jasmine\jasmine.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
-    <TypeScriptCompile Include="Scripts\typings\underscore\underscore.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\lodash\lodash.d.ts" />
     <TypeScriptCompile Include="Tests\specs\colorService.ts" />
     <Content Include="Tests\specs\colorService.js" />
     <TypeScriptCompile Include="Tests\specs\helpers.ts" />
