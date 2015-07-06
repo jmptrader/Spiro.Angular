@@ -69,7 +69,7 @@ var Spiro;
                 "grayDark",
                 "magenta",
                 "teal",
-                "redLight"
+                "redLight" //17
             ]);
             color.setDefaultColor("darkBlue");
             // map to convert from mask representation in RO extension to client represention.
