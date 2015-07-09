@@ -39,7 +39,7 @@ module Spiro.Angular {
 
         function hashCode(toHash) {
             var hash = 0, i, chr;
-            if (toHash.length == 0) return hash;
+            if (toHash.length === 0) return hash;
             for (i = 0; i < toHash.length; i++) {
                 chr = toHash.charCodeAt(i);
                 hash = ((hash << 5) - hash) + chr;

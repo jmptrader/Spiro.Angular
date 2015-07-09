@@ -16,9 +16,9 @@
 module Spiro.Angular {
 
     export interface ITransformStrategy {
-        transform(rep: Spiro.DomainObjectRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
-        transform(rep: Spiro.ActionResultRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
-        transform(rep: Spiro.ResourceRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
+        transform(rep: DomainObjectRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
+        transform(rep: ActionResultRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
+        transform(rep: ResourceRepresentation, loader: ILoaderWithTransform): ng.IPromise<any>;
     }
 
     // this is the default transform strategy that flattens the object
@@ -26,38 +26,38 @@ module Spiro.Angular {
 
         var transformStrategy = <ITransformStrategy>this;
 
-        function transformObject(rep: Spiro.DomainObjectRepresentation) {
+        function transformObject(rep: DomainObjectRepresentation) {
 
             var defer = $q.defer();
 
             var names = _.map(rep.propertyMembers(), (v, n: string) => n);
-            var values = _.map(rep.propertyMembers(), (v: Spiro.PropertyMember) => v.value().toString());
+            var values = _.map(rep.propertyMembers(), (v: PropertyMember) => v.value().toString());
             var result = <any>_.object(names, values);
             result["nof_rep"] = rep;
-            result["nof_url"] = "#" + "/" + rep.domainType() + "/" + rep.instanceId();
+            result["nof_url"] = `#/${rep.domainType()}/${rep.instanceId()}`;
 
             defer.resolve(result);
 
             return defer.promise;
         };
 
-        function transformActionResult(ar: Spiro.ActionResultRepresentation, loader: ILoaderWithTransform) {
+        function transformActionResult(ar: ActionResultRepresentation, loader: ILoaderWithTransform) {
             var list = ar.result().list().value().models;
             var resultArray : ng.IPromise<any>[] = [];
 
-            _.each((list), (link: Spiro.Link) => {
-                resultArray.push(loader.loadAndTransform(link.getTarget().hateoasUrl, Spiro.DomainObjectRepresentation));
+            _.each((list), (link: Link) => {
+                resultArray.push(loader.loadAndTransform(link.getTarget().hateoasUrl, DomainObjectRepresentation));
             });
 
             return $q.all(resultArray);
         };
 
-        transformStrategy.transform = (rep: Spiro.ResourceRepresentation, loader: ILoaderWithTransform) => {
-            if (rep instanceof Spiro.DomainObjectRepresentation) {
-                return transformObject(<Spiro.DomainObjectRepresentation>rep);
+        transformStrategy.transform = (rep: ResourceRepresentation, loader: ILoaderWithTransform) => {
+            if (rep instanceof DomainObjectRepresentation) {
+                return transformObject(rep);
             }
-            if (rep instanceof Spiro.ActionResultRepresentation) {
-                return transformActionResult(<Spiro.ActionResultRepresentation>rep, loader);
+            if (rep instanceof ActionResultRepresentation) {
+                return transformActionResult(rep, loader);
             }
 
             var defer = $q.defer();

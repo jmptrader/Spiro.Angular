@@ -37,7 +37,7 @@ module Spiro.Angular {
                 if (_.toArray(asJson).length > 0) {
                     var map = JSON.stringify(asJson);
                     var encodedMap = encodeURI(map);
-                    url += "?" + encodedMap;
+                    url += `?${encodedMap}`;
                 }
             }
 

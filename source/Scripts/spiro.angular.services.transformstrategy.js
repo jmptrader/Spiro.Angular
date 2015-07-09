@@ -24,7 +24,7 @@ var Spiro;
                 var values = _.map(rep.propertyMembers(), function (v) { return v.value().toString(); });
                 var result = _.object(names, values);
                 result["nof_rep"] = rep;
-                result["nof_url"] = "#" + "/" + rep.domainType() + "/" + rep.instanceId();
+                result["nof_url"] = "#/" + rep.domainType() + "/" + rep.instanceId();
                 defer.resolve(result);
                 return defer.promise;
             }

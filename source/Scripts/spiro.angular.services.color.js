@@ -23,7 +23,7 @@ var Spiro;
             var defaultColor = "darkBlue";
             function hashCode(toHash) {
                 var hash = 0, i, chr;
-                if (toHash.length == 0)
+                if (toHash.length === 0)
                     return hash;
                 for (i = 0; i < toHash.length; i++) {
                     chr = toHash.charCodeAt(i);
