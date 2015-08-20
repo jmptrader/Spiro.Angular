@@ -19,6 +19,8 @@ module Spiro.Angular {
 
     export interface IRepLoader {
         populate: <T>(m: IHateoasModel, ignoreCache?: boolean, r?: IHateoasModel) => ng.IPromise<T>;
+        invoke: (action : ActionMember, parms : {id : string, val : Value}[]) => ng.IPromise<ActionResultRepresentation>;
+
     }
 
     // TODO investigate using transformations to transform results 
@@ -55,7 +57,8 @@ module Spiro.Angular {
             return data;
         }
 
-        repLoader.populate = function<T> (model: IHateoasModel, ignoreCache?: boolean, expected?: IHateoasModel) {
+        repLoader.populate = function <T>(model: IHateoasModel, ignoreCache?: boolean, expected?: IHateoasModel): ng.IPromise<T>
+        {
 
             var response = expected || model;
             var useCache = !ignoreCache;
@@ -94,6 +97,13 @@ module Spiro.Angular {
 
             return delay.promise;
         };
+
+
+        repLoader.invoke = function (action: ActionMember, parms: { id: string, val: Value }[]) : ng.IPromise < ActionResultRepresentation > {
+            var invoke = action.getInvoke();                                          
+            _.each(parms, (vp) => invoke.setParameter(vp.id, vp.val));
+            return repLoader.populate (invoke, true);
+        }
 
     });
 
