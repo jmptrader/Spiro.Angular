@@ -27,3 +27,5 @@ test-results/karma-test-results.xml
 
 .idea/
 *.iml
+source/.vs/config/applicationhost.config
+source/.vs/Spiro.Angular/v14/.suo

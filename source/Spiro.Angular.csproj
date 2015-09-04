@@ -17,6 +17,7 @@
     <IISExpressUseClassicPipelineMode />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\spiro.angular.services.color.ts" />
@@ -80,13 +81,7 @@
     <Content Include="Scripts\angular-route.min.js.map" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\underscore-min.map" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Jasmine\SpecRunner.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\underscore.min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
