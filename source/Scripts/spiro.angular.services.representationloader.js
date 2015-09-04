@@ -72,6 +72,11 @@ var Spiro;
                 });
                 return delay.promise;
             };
+            repLoader.invoke = function (action, parms) {
+                var invoke = action.getInvoke();
+                _.each(parms, function (vp) { return invoke.setParameter(vp.id, vp.val); });
+                return repLoader.populate(invoke, true);
+            };
         });
     })(Angular = Spiro.Angular || (Spiro.Angular = {}));
 })(Spiro || (Spiro = {}));

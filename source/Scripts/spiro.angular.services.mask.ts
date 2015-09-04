@@ -66,7 +66,8 @@ module Spiro.Angular {
                 case ("clob"):
                     return null;
                 case ("decimal"):
-                    return { name: "currency", mask: "$" };
+                    return null;
+                    //return { name: "currency", mask: "$" };
                 case ("int"):
                     return { name: "number", mask: "" };
                 default:
